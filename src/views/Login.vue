@@ -2,6 +2,7 @@
   <main class="main overflow-hidden p-20">
     <LoginForm v-show="show === 'login'" @show-register="show = 'register'" />
     <RegisterForm v-show="show === 'register'" @show-login="show = 'login'" />
+    <div class=""></div>
   </main>
 </template>
 

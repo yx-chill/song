@@ -31,7 +31,7 @@
         class="h-10 pl-10 text-xl block w-full rounded" />
         <ErrorMessage class="text-red-600" name="age" />
     </div>
-    <button :disabled="login_in_submission" type="submit" class="block w-full mb-3 font-bold
+    <button type="submit" class="block w-full mb-3 font-bold
        bg-purple-600 text-white py-1.5 px-3 rounded transition hover:bg-purple-700">
         註冊
     </button>

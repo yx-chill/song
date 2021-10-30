@@ -1,12 +1,13 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'https://api.sally-handmade.com',
+  baseURL: 'https://api.sally-handmade.com/music',
   timeout: 10000,
+  headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
 });
 
 export const get = (url, params = {}) => new Promise((resolve, reject) => {
-  instance.post(url, { params }).then((response) => {
+  instance.get(url, { params }).then((response) => {
     resolve(response.data);
   }, (err) => {
     reject(err);

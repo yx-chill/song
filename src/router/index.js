@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 import Home from '../views/Home.vue';
 
 const Login = () => import('@/views/Login.vue');
+const Favorite = () => import('@/views/Favorite.vue');
 
 const routes = [
   {
@@ -21,6 +22,11 @@ const routes = [
     path: '/login',
     name: 'login',
     component: Login,
+  },
+  {
+    path: '/favorite',
+    name: 'favorite',
+    component: Favorite,
   },
 ];
 
