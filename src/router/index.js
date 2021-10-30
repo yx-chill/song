@@ -3,6 +3,8 @@ import Home from '../views/Home.vue';
 
 const Login = () => import('@/views/Login.vue');
 const Favorite = () => import('@/views/Favorite.vue');
+const Manage = () => import('@/views/back/Manage.vue');
+const Search = () => import('@/views/Search.vue');
 
 const routes = [
   {
@@ -27,6 +29,16 @@ const routes = [
     path: '/favorite',
     name: 'favorite',
     component: Favorite,
+  },
+  {
+    path: '/manage',
+    name: 'manage',
+    component: Manage,
+  },
+  {
+    path: '/search',
+    name: 'search',
+    component: Search,
   },
 ];
 

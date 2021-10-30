@@ -36,7 +36,7 @@
         <span>5:00</span>
       </div>
     </div>
-    <div class="w-30">3</div>
+    <div class="w-30"></div>
   </div>
 </template>
 
@@ -49,7 +49,6 @@ export default {
     const play = ref(false);
     const toggleAudio = () => {
       play.value = !play.value;
-      console.log(play.value);
     };
     return {
       play, toggleAudio,

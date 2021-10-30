@@ -1,21 +1,28 @@
 <template>
-  <div class="p-7">
-    home
+  <div class=" p-7">
+    search
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import { onMounted } from 'vue';
+import { onMounted, onBeforeUnmount } from 'vue';
 import { useStore } from 'vuex';
 
 export default {
-  name: 'Home',
+  name: 'Search',
   setup() {
     const store = useStore();
+    store.commit('toggleSearchShow');
+    onBeforeUnmount(() => {
+      store.commit('toggleSearchShow');
+    });
     onMounted(() => store.dispatch('toggleLayoutShow', true));
     return {
     };
   },
 };
 </script>
+
+<style>
+
+</style>
