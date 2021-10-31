@@ -23,7 +23,7 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: Login,
+    components: { back: Login },
   },
   {
     path: '/favorite',
@@ -33,7 +33,7 @@ const routes = [
   {
     path: '/manage',
     name: 'manage',
-    component: Manage,
+    components: { back: Manage },
   },
   {
     path: '/search',

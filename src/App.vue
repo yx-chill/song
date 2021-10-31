@@ -1,12 +1,15 @@
 <template>
-  <main class="main flex">
-    <SideBar v-show="showLayout" />
-    <section class="w-full">
-      <Header v-show="showLayout" />
-        <router-view />
+  <main class="main flex" v-show="showLayout">
+    <SideBar />
+    <section class="w-full flex flex-col">
+      <Header />
+      <div class="bg-gray-700 flex-grow overflow-auto p-7">
+      <router-view />
+      </div>
     </section>
   </main>
   <Player v-show="showLayout" />
+  <router-view name="back" />
 </template>
 
 <script>
@@ -32,6 +35,14 @@ export default {
 </script>
 
 <style class="scoped">
+::-webkit-scrollbar {
+  width: 8px;
+  background: #374151;
+}
+::-webkit-scrollbar-thumb {
+  background: #5a5a5a;
+  border-radius: 8px;
+}
 .main {
   height: calc(100vh - 90px);
 }
