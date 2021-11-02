@@ -3,6 +3,10 @@
     <div class="logo h-12 text-white text-2xl font-black text-center">
       <i class="fas fa-music"></i>
       LOGO</div>
+    <div class="text-black text-lg p-3 bg-yellow-500 rounded-md mb-2"
+      v-if="userLoggedIn">
+      <i class="fas fa-address-card mr-3"></i>{{ username }}
+    </div>
     <ul class="text-lg mb-10">
       <li class="px-3 py-1 hover:bg-gray-400 rounded-md">
         <router-link class="block w-full" :to="{ name: 'about' }">
@@ -24,8 +28,21 @@
 </template>
 
 <script>
+import { computed } from 'vue';
+import { useStore } from 'vuex';
+
 export default {
   name: 'SideBar',
+  setup() {
+    const store = useStore();
+    const userLoggedIn = computed(() => store.state.userLoggedIn);
+    const username = computed(() => store.state.username);
+    console.log(userLoggedIn.value);
+    console.log(username.value);
+    return {
+      userLoggedIn, username,
+    };
+  },
 };
 </script>
 

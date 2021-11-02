@@ -31,8 +31,6 @@ export default {
     const showSearch = computed(() => store.state.showSearch);
     const isLogin = computed(() => store.state.userLoggedIn);
     const logout = async () => {
-      console.log('.................................................');
-      console.log(store.state.accessToken);
       await axios({
         method: 'get',
         url: 'https://api.sally-handmade.com/music/v1/logout',

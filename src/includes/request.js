@@ -15,7 +15,7 @@ export const get = (url, params = {}) => new Promise((resolve, reject) => {
 
 export const post = (url, data = {}) => new Promise((resolve, reject) => {
   instance.post(url, data, {
-    headers: { Accept: 'multipart/form-data' },
+    headers: { Accept: 'application/json' },
   }).then((response) => {
     resolve(response.data);
   }, (err) => {

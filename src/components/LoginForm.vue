@@ -57,10 +57,9 @@ export default {
       await post(
         '/v1/login',
         { email: email.value, password: password.value },
-      ).then((res) => {
-        console.log('----------------------------------');
-        console.log(res.access_token);
-        store.dispatch('login', { access: res.access_token, refresh: res.refresh_token });
+      ).then(async (res) => {
+        await store.dispatch('login', { access: res.access_token, refresh: res.refresh_token });
+        await store.dispatch('getUsername', { access: res.access_token });
         router.push({ name: 'home' });
       }).catch((err) => {
         console.log(err.response);

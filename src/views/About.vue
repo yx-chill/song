@@ -7,7 +7,6 @@
 
 <script>
 import { ref, onMounted } from 'vue';
-import '@/includes/kkbox';
 
 export default {
   name: 'About',

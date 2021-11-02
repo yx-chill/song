@@ -1,10 +1,12 @@
 import { createStore } from 'vuex';
+import axios from 'axios';
 
 export default createStore({
   state: {
     showLayout: true,
     showSearch: false,
     userLoggedIn: false,
+    username: '1',
     accessToken: '',
     refreshToken: '',
   },
@@ -12,10 +14,14 @@ export default createStore({
     login(state) {
       state.userLoggedIn = true;
     },
+    getUsername(state, payload) {
+      state.username = payload;
+    },
     logout(state) {
       state.userLoggedIn = false;
       state.accessToken = '';
       state.refreshToken = '';
+      state.username = '';
     },
     toggleLayoutShow(state, payload) {
       state.showLayout = payload;
@@ -38,6 +44,17 @@ export default createStore({
     },
     logout({ commit }) {
       commit('logout');
+    },
+    async getUsername({ commit }, payload) {
+      await axios({
+        method: 'get',
+        url: 'https://api.sally-handmade.com/music/v1/user',
+        headers: { Authorization: `Bearer ${payload.access}` },
+      }).then((res) => {
+        commit('getUsername', res.data.data.name);
+      }).catch((error) => {
+        console.log(error);
+      });
     },
   },
   modules: {
