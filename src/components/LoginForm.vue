@@ -31,17 +31,15 @@
 
 <script>
 import { ref } from 'vue';
-// import { useStore } from 'vuex';
-// import { useRouter } from 'vue-router';
-// import axios from 'axios';
-// import { post } from '@/includes/request';
-import axios from 'axios';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
+import { post } from '@/includes/request';
 
 export default {
   name: 'LoginForm',
   setup() {
-    // const store = useStore();
-    // const router = useRouter();
+    const store = useStore();
+    const router = useRouter();
     const pwd = ref(null);
     const eye = ref('fas fa-eye');
     const togglepwdtype = () => {
@@ -55,59 +53,25 @@ export default {
     };
     const email = ref('');
     const password = ref('');
-    const login = () => {
-      try {
-        axios({
-          method: 'post',
-          url: 'https://api.sally-handmade.com/music/v1/login',
-          data: `email=${email.value}&password=${password.value}`,
-        }).then((response) => {
-          console.log(response);
-        });
-      } catch (err) {
-        console.log(err, 111);
-      }
-      // router.push({ name: 'home' });
-      // console.log({ email: email.value, password: password.value });
-      // fetch('https://api.sally-handmade.com/music/v1/login', {
-      //   method: 'POST',
-      //   headers: { Accept: 'application/json',
-      //    'Content-Type': 'application/x-www-form-urlencoded' },
-      //   // body: JSON.stringify({ email: email.value, password: password.value }),
-      //   body: `email=${email.value}&password=${password.value}`,
-      //   // body: JSON.stringify({ email: email.value, password: password.value }),
-      // }).then((response) => response.json())
-      //   .then((myJson) => console.log(myJson))
-      //   .catch((err) => console.log(err.errors));
+    const login = async () => {
+      await post(
+        '/v1/login',
+        { email: email.value, password: password.value },
+      ).then((res) => {
+        console.log('----------------------------------');
+        console.log(res.access_token);
+        store.dispatch('login', { access: res.access_token, refresh: res.refresh_token });
+        router.push({ name: 'home' });
+      }).catch((err) => {
+        console.log(err.response);
+        console.log('error');
+      });
     };
     return {
       eye, togglepwdtype, pwd, login, email, password,
     };
   },
 };
-// import { post } from '@/utils/request'
-// const useLoginEffect = (showToast) => {
-//   const router = useRouter()
-//   const data = reactive({ username: '', password: '' })
-//   const handleLogin = async (e) => {
-//     try {
-//       const result = await post('/api/user/login', {
-//         username: data.username,
-//         password: data.password
-//       })
-//       if (result.code === '0002') {
-//         localStorage.isLogin = true
-//         router.push({ name: 'Home' })
-//       } else {
-//         showToast('登入失敗')
-//       }
-//     } catch (e) {
-//       showToast('請求失敗')
-//     }
-//   }
-//   const { username, password } = toRefs(data)
-//   return { username, password, handleLogin }
-// }
 </script>
 
 <style>

@@ -1,5 +1,5 @@
 <template>
-  <VeeForm :validation-schema="schema"
+  <VeeForm :validation-schema="schema" @submit.prevent="register"
     class=" bg-purple-200 bg-opacity-80 p-4 rounded">
     <div class="emailgroup relative mb-3">
       <i class="fas fa-user absolute top-2 left-3 text-xl"></i>
@@ -25,12 +25,6 @@
         class="h-10 pl-10 text-xl block w-full rounded" />
         <ErrorMessage class="text-red-600" name="username" />
     </div>
-    <div class="emailgroup relative mb-3">
-      <i class="fas fa-calendar absolute top-2 left-3 text-xl"></i>
-      <VeeField type="number" name="age" placeholder="年齡"
-        class="h-10 pl-10 text-xl block w-full rounded" />
-        <ErrorMessage class="text-red-600" name="age" />
-    </div>
     <button type="submit" class="block w-full mb-3 font-bold
        bg-purple-600 text-white py-1.5 px-3 rounded transition hover:bg-purple-700">
         註冊
@@ -54,7 +48,6 @@ export default {
     const schema = reactive({
       username: 'required|min:3|max:10|alpha_spaces',
       email: 'required|min:3|max:50|email',
-      age: 'required|min_value:18|max_value:100',
       password: 'required|min:6|max:32',
       password_confirmation: 'passwords_mismatch:@password',
     });
