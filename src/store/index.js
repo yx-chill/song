@@ -9,6 +9,8 @@ export default createStore({
     username: '1',
     accessToken: '',
     refreshToken: '',
+    adminToken: '',
+    adminRefreshToken: '',
   },
   mutations: {
     login(state) {
@@ -33,6 +35,10 @@ export default createStore({
       state.accessToken = payload.access;
       state.refreshToken = payload.refresh;
     },
+    getAdminToken(state, payload) {
+      state.adminToken = payload.access;
+      state.adminRefreshToken = payload.refresh;
+    },
   },
   actions: {
     toggleLayoutShow({ commit }, payload) {
@@ -55,6 +61,9 @@ export default createStore({
       }).catch((error) => {
         console.log(error);
       });
+    },
+    adminLogin({ commit }, payload) {
+      commit('getAdminToken', payload);
     },
   },
   modules: {

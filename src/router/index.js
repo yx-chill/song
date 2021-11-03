@@ -3,14 +3,21 @@ import Home from '../views/Home.vue';
 
 const Login = () => import('@/views/Login.vue');
 const Favorite = () => import('@/views/Favorite.vue');
-const Manage = () => import('@/views/back/Manage.vue');
+const Admin = () => import('@/views/back/Admin.vue');
 const Search = () => import('@/views/Search.vue');
+const Manage = () => import('@/views/back/Manage.vue');
+const SongList = () => import('@/views/back/SongList.vue');
+const AddSong = () => import('@/views/back/AddSong.vue');
 
 const routes = [
   {
     path: '/',
     name: 'home',
     component: Home,
+  },
+  {
+    path: '/:catchAll(.*)*',
+    redirect: { name: 'home' },
   },
   {
     path: '/about',
@@ -31,14 +38,32 @@ const routes = [
     component: Favorite,
   },
   {
-    path: '/manage',
-    name: 'manage',
-    components: { back: Manage },
+    path: '/admin',
+    name: 'admin',
+    components: { back: Admin },
   },
   {
     path: '/search',
     name: 'search',
     component: Search,
+  },
+  {
+    path: '/manage',
+    name: 'manage',
+    components: { back: Manage },
+    redirect: '/manage/add-song',
+    children: [
+      {
+        path: 'song-list',
+        name: 'song-list',
+        component: SongList,
+      },
+      {
+        path: 'add-song',
+        name: 'add-song',
+        component: AddSong,
+      },
+    ],
   },
 ];
 

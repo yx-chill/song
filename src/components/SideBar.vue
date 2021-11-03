@@ -37,8 +37,6 @@ export default {
     const store = useStore();
     const userLoggedIn = computed(() => store.state.userLoggedIn);
     const username = computed(() => store.state.username);
-    console.log(userLoggedIn.value);
-    console.log(username.value);
     return {
       userLoggedIn, username,
     };

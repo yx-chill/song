@@ -5,6 +5,10 @@ import store from './store';
 import VeeValidatePlugin from './includes/validation';
 import './assets/tailwind.css';
 import './assets/main.css';
+import ProgressBar from './includes/progress-bar';
+import 'nprogress/nprogress.css';
+
+ProgressBar(router);
 
 const app = createApp(App);
 
