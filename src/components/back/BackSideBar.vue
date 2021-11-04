@@ -1,24 +1,39 @@
 <template>
-  <div class="sidebar text-white w-64 h-full">
-    <div class="bg-black w-full h-full opacity-75 flex flex-col">
-      <div class="p-4 pb-0">
+  <div class="sidebar text-white w-20 h-full">
+    <div class="bg-black w-full h-full opacity-75 p-3 flex flex-col relative">
+      <div class="absolute bottom-0 left-0 p-3 text-center
+          rounded hover:bg-opacity-20 hover:bg-white block w-full">
+        <router-link :to="{ name: 'admin' }" >
+          <i class="fas fa-sign-out-alt text-xl mr-4"></i>
+          <span class="text hidden">登出</span>
+        </router-link>
+      </div>
+      <div class="p-3 pb-0">
         <h2 class="text-white text-xl text-center
           border-b border-gray-50 border-opacity-70 pb-3">
-        <i class="fas fa-user-shield mr-3"></i>後臺管理</h2>
+          <i class="fas fa-user-shield text-xl mr-3"></i>
+          <span class="text hidden">後臺管理</span>
+        </h2>
       </div>
       <div class="overflow-auto">
-        <ul class="p-4">
+        <ul class="text-center">
           <li class="py-1"><router-link :to="{ name: 'song-list' }"
             class="block w-full rounded hover:bg-opacity-20 hover:bg-white px-3 py-1">
-            <i class="fas fa-chart-line text-xl mr-4"></i>儀錶板</router-link>
+            <i class="fas fa-chart-line text-xl mr-4"></i>
+            <span class="text hidden">儀錶板</span>
+            </router-link>
           </li>
           <li class="py-1"><router-link :to="{ name: 'song-list' }"
             class="block w-full rounded hover:bg-opacity-20 hover:bg-white px-3 py-1">
-            <i class="fas fa-list-ul text-xl mr-4"></i>歌曲列表</router-link>
+            <i class="fas fa-list-ul text-xl mr-4"></i>
+            <span class="text hidden">歌曲列表</span>
+            </router-link>
           </li>
           <li class="py-1"><router-link :to="{ name: 'add-song' }"
             class="block w-full rounded hover:bg-opacity-20 hover:bg-white px-3 py-1">
-            <i class="fas fa-upload text-xl mr-4"></i>新增歌曲</router-link>
+            <i class="fas fa-upload text-xl mr-4"></i>
+            <span class="text hidden">新增歌曲</span>
+            </router-link>
           </li>
         </ul>
       </div>
@@ -32,9 +47,20 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .sidebar {
   background: url('../../assets/sidebar.jpg');
   background-size: cover;
+  transition: .3s;
+  &:hover {
+    width: 260px;
+    & ul {
+      text-align: left;
+      padding: 16px;
+    }
+    & .text {
+      display: inline-block;
+    }
+  }
 }
 </style>

@@ -33,8 +33,12 @@ export default {
     const isDragover = ref(false);
     const upload = (e) => {
       isDragover.value = false;
-      const files = e.dataTransfer ? e.dataTransfer.files : e.target.files;
-      console.log(files);
+      const file = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
+      if (file.type !== 'audio/mpeg') {
+        console.log('請選擇音樂檔'); // TODO
+        return;
+      }
+      console.log(file);
     };
     return {
       isDragover, upload,

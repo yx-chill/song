@@ -8,6 +8,8 @@
 <script>
 import { onMounted } from 'vue';
 import { useStore } from 'vuex';
+import axios from 'axios';
+// import { useRouter } from 'vue-router';
 import SideBar from '@/components/back/BackSideBar.vue';
 
 export default {
@@ -17,7 +19,20 @@ export default {
   },
   setup() {
     const store = useStore();
+    // const router = useRouter();
     onMounted(() => store.dispatch('toggleLayoutShow', false));
+    // if (!store.state.adminLoggedIn) {
+    //   router.push({ name: 'home' });
+    // }
+    axios({
+      method: 'get',
+      url: 'https://api.sally-handmade.com/music/v1/admin/music-type',
+      headers: { Authorization: `Bearer ${store.state.adminToken}` },
+    }).then((res) => {
+      store.commit('getGenre', res.data.data);
+    }).catch((error) => {
+      console.log(error);
+    });
   },
 };
 </script>

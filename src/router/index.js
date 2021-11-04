@@ -51,7 +51,8 @@ const routes = [
     path: '/manage',
     name: 'manage',
     components: { back: Manage },
-    redirect: '/manage/add-song',
+    // redirect: '/manage/add-song',
+    meta: { requiresAuth: true },
     children: [
       {
         path: 'song-list',

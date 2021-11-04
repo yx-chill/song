@@ -9,8 +9,10 @@ export default createStore({
     username: '1',
     accessToken: '',
     refreshToken: '',
+    adminLoggedIn: false,
     adminToken: '',
     adminRefreshToken: '',
+    genres: '',
   },
   mutations: {
     login(state) {
@@ -38,6 +40,10 @@ export default createStore({
     getAdminToken(state, payload) {
       state.adminToken = payload.access;
       state.adminRefreshToken = payload.refresh;
+      state.adminLoggedIn = true;
+    },
+    getGenre(state, payload) {
+      state.genres = payload;
     },
   },
   actions: {

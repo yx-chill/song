@@ -46,4 +46,8 @@ export default {
 .main {
   height: calc(100vh - 90px);
 }
+#nprogress .bar {
+  background: red !important;
+  height: 4px !important;
+}
 </style>
