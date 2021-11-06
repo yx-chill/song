@@ -1,5 +1,5 @@
 <template>
-  <header class="h-14 p-2 bg-gray-800 w-full">
+  <header class="h-14 px-10 py-2 bg-gray-800 w-full">
     <div class="container flex justify-between items-center m-auto">
       <div class="h-8">
         <div class="relative" v-show="showSearch">
@@ -23,22 +23,24 @@
 import { computed } from 'vue';
 import { useStore } from 'vuex';
 import axios from 'axios';
+import storage from '@/models/storage';
 
 export default {
   name: 'Header',
   setup() {
     const store = useStore();
     const showSearch = computed(() => store.state.showSearch);
-    const isLogin = computed(() => store.state.userLoggedIn);
+    const isLogin = storage.get('userLoggedIn');
     const logout = async () => {
       await axios({
         method: 'get',
         url: 'https://api.sally-handmade.com/music/v1/logout',
-        headers: { Authorization: `Bearer ${store.state.accessToken}` },
-      }).then((res) => {
-        console.log(res);
+        headers: { Authorization: `Bearer ${storage.get('userToken')}` },
+      }).then(() => {
+        storage.set('userLoggedIn', '');
+        storage.set('userToken', '');
+        storage.set('userRefreshToken', '');
         console.log('success');
-        store.dispatch('logout');
         window.location.reload();
       }).catch((err) => {
         console.log(err);

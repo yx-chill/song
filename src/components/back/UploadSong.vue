@@ -19,7 +19,7 @@
           @drop.prevent.stop="upload($event)">
         <h5>Drop your files here</h5>
       </div>
-      <input type="file" @change="upload($event)" />
+      <input type="file" accept="audio/mpeg" @change="upload($event)" />
     </div>
   </div>
 </template>

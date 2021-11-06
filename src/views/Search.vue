@@ -11,23 +11,29 @@
       <li class="w-full aspect-w-1 aspect-h-1 bg-gray-400 rounded-md"></li>
       <li class="w-full aspect-w-1 aspect-h-1 bg-gray-400 rounded-md"></li>
     </ul>
+    <input type="color" v-model="testcolor" />
   </div>
 </template>
 
 <script>
-import { onMounted, onBeforeUnmount } from 'vue';
+import {
+  onMounted, onBeforeUnmount, ref, watchEffect,
+} from 'vue';
 import { useStore } from 'vuex';
 
 export default {
   name: 'Search',
   setup() {
     const store = useStore();
+    const testcolor = ref('#ff0000');
     store.commit('toggleSearchShow');
     onBeforeUnmount(() => {
       store.commit('toggleSearchShow');
     });
     onMounted(() => store.dispatch('toggleLayoutShow', true));
+    watchEffect(() => console.log(testcolor.value));
     return {
+      testcolor,
     };
   },
 };

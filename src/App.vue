@@ -18,6 +18,7 @@ import { useStore } from 'vuex';
 import Header from '@/components/Header.vue';
 import SideBar from '@/components/SideBar.vue';
 import Player from '@/components/Player.vue';
+import storage from '@/models/storage';
 
 export default {
   name: 'App',
@@ -27,6 +28,8 @@ export default {
   setup() {
     const store = useStore();
     const showLayout = computed(() => store.state.showLayout);
+    storage.set('userLoggedIn', '');
+    storage.set('username', '');
     return {
       showLayout,
     };

@@ -1,6 +1,6 @@
 <template>
   <section>
-    <VeeForm @submit="addSong" :validation-schema="schema" :initial-values="userData"
+    <VeeForm @submit="addSong($event)" :validation-schema="schema" :initial-values="userData"
     class="bg-green-200 bg-opacity-80 p-4 rounded">
       <div class="flex justify-between gap-3 mb-2">
         <div class="w-3/4">
@@ -9,6 +9,12 @@
             <VeeField type="text" name="songname" placeholder="歌曲名稱"
               class="h-10 pl-10 text-xl block w-full rounded mb-1" />
               <ErrorMessage class="text-red-600" name="songname" />
+          </div>
+          <div class="emailgroup relative mb-3">
+            <i class="fas fa-marker absolute top-2 left-3 text-xl"></i>
+            <VeeField type="text" name="composer" placeholder="作者名稱"
+              class="h-10 pl-10 text-xl block w-full rounded mb-1" />
+              <ErrorMessage class="text-red-600" name="composer" />
           </div>
           <div class="passwordgroup relative mb-3">
             <i class="fas fa-headphones absolute top-2 left-3 text-xl"></i>
@@ -51,6 +57,7 @@ export default {
     const store = useStore();
     const schema = {
       songname: 'required|min:3|max:10|alpha_spaces',
+      composer: 'required|min:3|max:10|alpha_spaces',
       country: 'required',
     };
     const { genres } = store.state;

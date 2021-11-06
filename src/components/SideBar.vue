@@ -29,14 +29,13 @@
 
 <script>
 import { computed } from 'vue';
-import { useStore } from 'vuex';
+import storage from '@/models/storage';
 
 export default {
   name: 'SideBar',
   setup() {
-    const store = useStore();
-    const userLoggedIn = computed(() => store.state.userLoggedIn);
-    const username = computed(() => store.state.username);
+    const userLoggedIn = computed(() => storage.get('userLoggedIn'));
+    const username = computed(() => storage.get('username'));
     return {
       userLoggedIn, username,
     };
