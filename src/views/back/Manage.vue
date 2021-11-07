@@ -9,8 +9,9 @@
 import { onMounted } from 'vue';
 import { useStore } from 'vuex';
 import axios from 'axios';
-// import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 import SideBar from '@/components/back/BackSideBar.vue';
+import storage from '@/models/storage';
 
 export default {
   name: 'Manage',
@@ -19,15 +20,15 @@ export default {
   },
   setup() {
     const store = useStore();
-    // const router = useRouter();
+    const router = useRouter();
     onMounted(() => store.dispatch('toggleLayoutShow', false));
-    // if (!store.state.adminLoggedIn) {
-    //   router.push({ name: 'home' });
-    // }
+    if (!storage.get('adminToken')) {
+      router.push({ name: 'home' });
+    }
     axios({
       method: 'get',
       url: 'https://api.sally-handmade.com/music/v1/admin/music-type',
-      headers: { Authorization: `Bearer ${store.state.adminToken}` },
+      headers: { Authorization: `Bearer ${storage.get('adminToken')}` },
     }).then((res) => {
       store.commit('getGenre', res.data.data);
     }).catch((error) => {

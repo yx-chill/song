@@ -24,7 +24,8 @@
 import { onMounted, ref } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
-import { post } from '@/includes/request';
+import axios from 'axios';
+import storage from '@/models/storage';
 
 export default {
   name: 'Admin',
@@ -35,11 +36,13 @@ export default {
     const email = ref('');
     const password = ref('');
     const adminLogin = async () => {
-      await post(
-        '/v1/admin/login',
-        { email: email.value, password: password.value },
-      ).then(async (res) => {
-        await store.dispatch('adminLogin', { access: res.access_token, refresh: res.refresh_token });
+      await axios({
+        method: 'post',
+        url: 'https://api.sally-handmade.com/music/v1/admin/login',
+        data: { email: email.value, password: password.value },
+      }).then((res) => {
+        storage.set('adminToken', res.data.access_token);
+        storage.set('adminRefresh', res.data.refresh_token);
         router.push({ name: 'manage' });
       }).catch((err) => {
         console.log(err.response);

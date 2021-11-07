@@ -19,7 +19,7 @@
           @drop.prevent.stop="upload($event)">
         <h5>Drop your files here</h5>
       </div>
-      <input type="file" accept="audio/mpeg" @change="upload($event)" />
+      <VeeField type="file" name="file" accept="audio/mpeg" ref="inputSong" />
     </div>
   </div>
 </template>
@@ -30,18 +30,21 @@ import { ref } from 'vue';
 export default {
   name: 'UploadSong',
   setup() {
+    const inputSong = ref(null);
     const isDragover = ref(false);
     const upload = (e) => {
       isDragover.value = false;
-      const file = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
-      if (file.type !== 'audio/mpeg') {
-        console.log('請選擇音樂檔'); // TODO
-        return;
-      }
-      console.log(file);
+      console.log(inputSong.value);
+      inputSong.value.files = e.dataTransfer.files;
+      // const file = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
+      // if (file.type !== 'audio/mpeg') {
+      //   console.log('請選擇音樂檔'); // TODO
+      //   return;
+      // }
+      // console.log(file);
     };
     return {
-      isDragover, upload,
+      isDragover, upload, inputSong,
     };
   },
 };

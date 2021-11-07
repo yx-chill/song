@@ -3,7 +3,7 @@
     <div class="bg-black w-full h-full opacity-75 p-3 flex flex-col relative">
       <div class="absolute bottom-0 left-0 p-3 text-center
           rounded hover:bg-opacity-20 hover:bg-white block w-full">
-        <router-link :to="{ name: 'admin' }" >
+        <router-link :to="{ name: 'admin' }" class="block w-full" @click="adminLogout">
           <i class="fas fa-sign-out-alt text-xl mr-4"></i>
           <span class="text hidden">登出</span>
         </router-link>
@@ -42,8 +42,19 @@
 </template>
 
 <script>
-export default {
+import storage from '@/models/storage';
 
+export default {
+  name: 'BackSideBar',
+  setup() {
+    const adminLogout = () => {
+      storage.set('adminToken', '');
+      storage.set('adminRefresh', '');
+    };
+    return {
+      adminLogout,
+    };
+  },
 };
 </script>
 

@@ -30,14 +30,14 @@ export default {
   setup() {
     const store = useStore();
     const showSearch = computed(() => store.state.showSearch);
-    const isLogin = storage.get('userLoggedIn');
+    const isLogin = computed(() => store.state.userLoggedIn);
     const logout = async () => {
       await axios({
         method: 'get',
         url: 'https://api.sally-handmade.com/music/v1/logout',
         headers: { Authorization: `Bearer ${storage.get('userToken')}` },
       }).then(() => {
-        storage.set('userLoggedIn', '');
+        store.commit('logout');
         storage.set('userToken', '');
         storage.set('userRefreshToken', '');
         console.log('success');

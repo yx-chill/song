@@ -15,6 +15,7 @@
 <script>
 import { computed } from 'vue';
 import { useStore } from 'vuex';
+import axios from 'axios';
 import Header from '@/components/Header.vue';
 import SideBar from '@/components/SideBar.vue';
 import Player from '@/components/Player.vue';
@@ -28,8 +29,18 @@ export default {
   setup() {
     const store = useStore();
     const showLayout = computed(() => store.state.showLayout);
-    storage.set('userLoggedIn', '');
-    storage.set('username', '');
+    if (storage.get('userToken')) {
+      store.commit('login');
+      axios({
+        method: 'get',
+        url: 'https://api.sally-handmade.com/music/v1/user',
+        headers: { Authorization: `Bearer ${storage.get('userToken')}` },
+      }).then((res) => {
+        store.commit('getUsername', res.data.data.name);
+      }).catch((error) => {
+        console.log(error);
+      });
+    }
     return {
       showLayout,
     };

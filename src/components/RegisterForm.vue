@@ -1,6 +1,6 @@
 <template>
   <VeeForm :validation-schema="schema" @submit="register"
-    class=" bg-purple-200 bg-opacity-80 p-4 rounded">
+    class="bg-purple-200 bg-opacity-80 p-4 rounded">
     <div class="emailgroup relative mb-3">
       <i class="fas fa-user absolute top-2 left-3 text-xl"></i>
       <VeeField type="email" name="email" placeholder="電子郵件"
@@ -9,9 +9,9 @@
     </div>
     <div class="emailgroup relative mb-3">
       <i class="fas fa-signature absolute top-2 left-3 text-xl"></i>
-      <VeeField type="text" name="username" placeholder="暱稱"
+      <VeeField type="text" name="name" placeholder="暱稱"
         class="h-10 pl-10 text-xl block w-full rounded" />
-        <ErrorMessage class="text-red-600" name="username" />
+        <ErrorMessage class="text-red-600" name="name" />
     </div>
     <div class="passwordgroup relative mb-3">
       <i class="fas fa-lock absolute top-2 left-3 text-xl"></i>
@@ -41,30 +41,28 @@
 
 <script>
 import { reactive } from 'vue';
-import { post } from '@/includes/request';
+import axios from 'axios';
 
 export default {
   name: 'RegisterForm',
   setup() {
     const schema = reactive({
-      username: 'required|min:3|max:10',
+      name: 'required|min:3|max:10',
       email: 'required|min:3|max:50|email',
       password: 'required|min:6|max:32',
       password_confirmation: 'passwords_mismatch:@password',
     });
-    const register = async (e) => {
-      await post('/v1/register',
-        {
-          name: e.username,
-          email: e.email,
-          password: e.password,
-          password_confirmation: e.password_confirmation,
-        }).then((res) => {
+    const register = async (data) => {
+      await axios({
+        method: 'post',
+        url: 'https://api.sally-handmade.com/music/v1/register',
+        data,
+      }).then((res) => {
         console.log(res.message);
         window.location.reload();
         console.log('123');
       }).catch((err) => {
-        console.log(err.response);
+        console.log(typeof err.response.status);
         console.log('error');
       });
     };

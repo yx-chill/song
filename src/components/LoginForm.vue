@@ -32,6 +32,7 @@
 
 <script>
 import { ref } from 'vue';
+import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 import storage from '@/models/storage';
@@ -39,6 +40,7 @@ import storage from '@/models/storage';
 export default {
   name: 'LoginForm',
   setup() {
+    const store = useStore();
     const router = useRouter();
     const pwd = ref(null);
     const eye = ref('fas fa-eye');
@@ -64,19 +66,9 @@ export default {
           url: 'https://api.sally-handmade.com/music/v1/login',
           data: { email: email.value, password: password.value },
         }).then(async (res) => {
-          storage.set('userLoggedIn', true);
+          store.commit('login');
           storage.set('userToken', res.data.access_token);
           storage.set('userRefreshToken', res.data.refresh_token);
-          await axios({
-            method: 'get',
-            url: 'https://api.sally-handmade.com/music/v1/user',
-            headers: { Authorization: `Bearer ${res.data.access_token}` },
-          // eslint-disable-next-line no-shadow
-          }).then((response) => {
-            storage.set('username', response.data.data.name);
-          }).catch((error) => {
-            console.log(error);
-          });
           router.push({ name: 'home' });
         }).catch((err) => {
           console.log(err.response.status);
