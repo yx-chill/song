@@ -62,7 +62,7 @@ export default {
       music_type_id: 'required',
     };
     const songData = {
-      genre: '1',
+      music_type_id: '1',
     };
     const genres = computed(() => store.state.genres);
     const addSong = async (e) => {

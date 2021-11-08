@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { computed } from 'vue';
+import { computed, onBeforeMount } from 'vue';
 import { useStore } from 'vuex';
 import axios from 'axios';
 import Header from '@/components/Header.vue';
@@ -29,18 +29,20 @@ export default {
   setup() {
     const store = useStore();
     const showLayout = computed(() => store.state.showLayout);
-    if (storage.get('userToken')) {
-      store.commit('login');
-      axios({
-        method: 'get',
-        url: 'https://api.sally-handmade.com/music/v1/user',
-        headers: { Authorization: `Bearer ${storage.get('userToken')}` },
-      }).then((res) => {
-        store.commit('getUsername', res.data.data.name);
-      }).catch((error) => {
-        console.log(error);
-      });
-    }
+    onBeforeMount(async () => {
+      if (storage.get('userToken')) {
+        store.commit('login');
+        await axios({
+          method: 'get',
+          url: 'https://api.sally-handmade.com/music/v1/user',
+          headers: { Authorization: `Bearer ${storage.get('userToken')}` },
+        }).then((res) => {
+          store.commit('getUsername', res.data.data.name);
+        }).catch((error) => {
+          console.log(error);
+        });
+      }
+    });
     return {
       showLayout,
     };

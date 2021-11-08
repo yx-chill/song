@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { onMounted } from 'vue';
+import { onBeforeMount } from 'vue';
 import { useStore } from 'vuex';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
@@ -21,18 +21,30 @@ export default {
   setup() {
     const store = useStore();
     const router = useRouter();
-    onMounted(() => store.dispatch('toggleLayoutShow', false));
-    if (!storage.get('adminToken')) {
-      router.push({ name: 'home' });
-    }
-    axios({
-      method: 'get',
-      url: 'https://api.sally-handmade.com/music/v1/admin/music-type',
-      headers: { Authorization: `Bearer ${storage.get('adminToken')}` },
-    }).then((res) => {
-      store.commit('getGenre', res.data.data);
-    }).catch((error) => {
-      console.log(error);
+    onBeforeMount(async () => {
+      store.dispatch('toggleLayoutShow', false);
+      if (!storage.get('adminToken')) {
+        router.push({ name: 'home' });
+      }
+      await axios({
+        method: 'get',
+        url: 'https://api.sally-handmade.com/music/v1/admin/music',
+        headers: { Authorization: `Bearer ${storage.get('adminToken')}` },
+      }).then((res) => {
+        console.log(res.data);
+        store.commit('getSongList', res.data.data);
+      }).catch((error) => {
+        console.log(error);
+      });
+      await axios({
+        method: 'get',
+        url: 'https://api.sally-handmade.com/music/v1/admin/music-type',
+        headers: { Authorization: `Bearer ${storage.get('adminToken')}` },
+      }).then((res) => {
+        store.commit('getGenre', res.data.data);
+      }).catch((error) => {
+        console.log(error);
+      });
     });
   },
 };

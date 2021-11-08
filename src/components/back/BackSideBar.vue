@@ -35,6 +35,12 @@
             <span class="text hidden">新增歌曲</span>
             </router-link>
           </li>
+          <li class="py-1"><router-link :to="{ name: 'add-genre' }"
+            class="block w-full rounded hover:bg-opacity-20 hover:bg-white px-3 py-1">
+            <i class="fas fa-bookmark text-xl mr-5"></i>
+            <span class="text hidden">新增曲風</span>
+            </router-link>
+          </li>
         </ul>
       </div>
     </div>

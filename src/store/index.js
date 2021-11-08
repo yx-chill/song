@@ -1,4 +1,5 @@
 import { createStore } from 'vuex';
+import { Howl } from 'howler';
 
 export default createStore({
   state: {
@@ -7,7 +8,9 @@ export default createStore({
     userLoggedIn: false,
     username: '',
     genres: '',
+    songList: {},
     currentSong: {},
+    sound: {},
   },
   mutations: {
     login(state) {
@@ -30,14 +33,22 @@ export default createStore({
     },
     newSong(state, payload) {
       state.currentSong = payload;
+      state.sound = new Howl({
+        src: [payload.url],
+        html5: true,
+      });
+    },
+    getSongList(state, payload) {
+      state.songList = payload;
     },
   },
   actions: {
     toggleLayoutShow({ commit }, payload) {
       commit('toggleLayoutShow', payload);
     },
-    async newSong({ commit }, payload) {
+    async newSong({ commit, state }, payload) {
       commit('newSong', payload);
+      state.sound.play();
     },
   },
   modules: {

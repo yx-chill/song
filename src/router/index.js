@@ -8,7 +8,7 @@ const Search = () => import('@/views/Search.vue');
 const Manage = () => import('@/views/back/Manage.vue');
 const SongList = () => import('@/views/back/SongList.vue');
 const AddSong = () => import('@/views/back/AddSong.vue');
-
+const addGenre = () => import('@/views/back/addGenre.vue');
 const routes = [
   {
     path: '/',
@@ -64,7 +64,16 @@ const routes = [
         name: 'add-song',
         component: AddSong,
       },
+      {
+        path: 'add-genre',
+        name: 'add-genre',
+        component: addGenre,
+      },
     ],
+  },
+  {
+    path: '/:catchAll(.*)*',
+    redirect: { name: 'home' },
   },
 ];
 
