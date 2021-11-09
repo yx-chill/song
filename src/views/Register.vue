@@ -1,23 +1,23 @@
 <template>
-  <main class="main overflow-hidden p-20">
-    <LoginForm @toRegister="toRegister"/>
-  </main>
+<main class="main overflow-hidden p-20">
+  <RegisterForm @toLogin="toLogin"/>
+</main>
 </template>
 
 <script>
 import { useRouter } from 'vue-router';
-import LoginForm from '@/components/LoginForm.vue';
+import RegisterForm from '@/components/RegisterForm.vue';
 
 export default {
-  name: 'Login',
+  name: 'Register',
   components: {
-    LoginForm,
+    RegisterForm,
   },
   setup() {
     const router = useRouter();
-    const toRegister = () => router.push({ name: 'register' });
+    const toLogin = () => router.push({ name: 'login' });
     return {
-      toRegister,
+      toLogin,
     };
   },
 };

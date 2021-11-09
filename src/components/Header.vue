@@ -9,6 +9,9 @@
         </div>
       </div>
       <div>
+
+      </div>
+      <div>
         <router-link class="text-purple-200 font-bold text-sm px-3 py-2
           rounded-sm border border-purple-200"
         :to="{ name: 'login' }" v-if="!isLogin">登入</router-link>
@@ -20,24 +23,24 @@
 </template>
 
 <script>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
 import axios from 'axios';
 import storage from '@/models/storage';
 
 export default {
   name: 'Header',
-  setup() {
+  props: ['isLogin', 'title'],
+  setup(props) {
     const store = useStore();
+    const isLogin = ref(props.isLogin);
     const showSearch = computed(() => store.state.showSearch);
-    const isLogin = computed(() => store.state.userLoggedIn);
     const logout = async () => {
       await axios({
         method: 'get',
         url: 'https://api.sally-handmade.com/music/v1/logout',
         headers: { Authorization: `Bearer ${storage.get('userToken')}` },
       }).then(() => {
-        store.commit('logout');
         storage.set('userToken', '');
         storage.set('userRefreshToken', '');
         console.log('success');
@@ -48,6 +51,7 @@ export default {
       });
     };
     return {
+      // eslint-disable-next-line vue/no-dupe-keys
       showSearch, isLogin, logout,
     };
   },

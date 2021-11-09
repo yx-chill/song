@@ -2,14 +2,19 @@
   <div class="about">
     <h1>This is an about page</h1>
     <div id="box" ref="box"></div>
+    <Modal />
   </div>
 </template>
 
 <script>
 import { ref, onMounted } from 'vue';
+import Modal from '@/components/Modal.vue';
 
 export default {
   name: 'About',
+  components: {
+    Modal,
+  },
   setup() {
     const box = ref(null);
     onMounted(() => {

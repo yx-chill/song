@@ -4,17 +4,22 @@
       <i class="fas fa-music"></i>
       LOGO</div>
     <div class="text-black text-lg p-3 bg-yellow-500 rounded-md mb-2"
-      v-if="userLoggedIn">
+      v-if="isLogin">
       <i class="fas fa-address-card mr-3"></i>{{ username }}
     </div>
     <ul class="text-lg mb-10">
       <li class="px-3 py-1 hover:bg-gray-400 rounded-md">
-        <router-link class="block w-full" :to="{ name: 'about' }">
+        <router-link class="block w-full" :to="{ name: 'home' }">
         <i class="fas fa-home text-xl mr-3"></i>首頁
         </router-link></li>
       <li class="px-3 py-1 hover:bg-gray-400 rounded-md">
         <router-link class="block w-full" :to="{ name: 'search' }">
         <i class="fas fa-search text-xl mr-4"></i>搜尋
+        </router-link>
+      </li>
+      <li class="px-3 py-1 hover:bg-gray-400 rounded-md">
+        <router-link class="block w-full" :to="{ name: 'about' }">
+        <i class="fas fa-search text-xl mr-4"></i>測試頁
         </router-link>
       </li>
     </ul>
@@ -28,17 +33,19 @@
 </template>
 
 <script>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
 
 export default {
   name: 'SideBar',
-  setup() {
+  props: ['isLogin'],
+  setup(props) {
     const store = useStore();
-    const userLoggedIn = computed(() => store.state.userLoggedIn);
+    const isLogin = ref(props.isLogin);
     const username = computed(() => store.state.username);
     return {
-      userLoggedIn, username,
+      // eslint-disable-next-line vue/no-dupe-keys
+      isLogin, username,
     };
   },
 };

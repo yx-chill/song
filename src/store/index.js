@@ -3,7 +3,6 @@ import { Howl } from 'howler';
 
 export default createStore({
   state: {
-    showLayout: true,
     showSearch: false,
     userLoggedIn: false,
     username: '',
@@ -21,9 +20,6 @@ export default createStore({
     },
     getUsername(state, name) {
       state.username = name;
-    },
-    toggleLayoutShow(state, payload) {
-      state.showLayout = payload;
     },
     toggleSearchShow(state) {
       state.showSearch = !state.showSearch;
@@ -43,9 +39,6 @@ export default createStore({
     },
   },
   actions: {
-    toggleLayoutShow({ commit }, payload) {
-      commit('toggleLayoutShow', payload);
-    },
     async newSong({ commit, state }, payload) {
       commit('newSong', payload);
       state.sound.play();

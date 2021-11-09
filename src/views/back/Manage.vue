@@ -22,7 +22,6 @@ export default {
     const store = useStore();
     const router = useRouter();
     onBeforeMount(async () => {
-      store.dispatch('toggleLayoutShow', false);
       if (!storage.get('adminToken')) {
         router.push({ name: 'home' });
       }

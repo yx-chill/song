@@ -21,8 +21,7 @@
 </template>
 
 <script>
-import { onMounted, ref } from 'vue';
-import { useStore } from 'vuex';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 import storage from '@/models/storage';
@@ -31,8 +30,6 @@ export default {
   name: 'Admin',
   setup() {
     const router = useRouter();
-    const store = useStore();
-    onMounted(() => store.dispatch('toggleLayoutShow', false));
     const email = ref('');
     const password = ref('');
     const adminLogin = async () => {
