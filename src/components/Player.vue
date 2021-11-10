@@ -1,13 +1,16 @@
 <template>
   <div class="player text-gray-300 text-sm px-4 flex items-center w-full
     bg-gray-800 absolute bottom-0">
-    <div class="w-30 flex items-center">
-      <div class="w-14 h-14 mr-3">
-        <img src="http://www.davidguo.idv.tw/cube/images/SQ-1/SQ2.png" alt="song photo">
-      </div>
-      <div>
-          <p class=" text-base mb-1">夏夜晚風</p>
-          <p>伍佰</p>
+    <div class="w-30">
+      <div class="flex items-center" v-if="currentSong.name">
+        <div class="w-14 h-14 mr-3">
+          <img alt="song photo"
+            :src="currentSong.image ? currentSong.image : 'http://www.davidguo.idv.tw/cube/images/SQ-1/SQ2.png'">
+        </div>
+        <div>
+            <p class=" text-base mb-1">{{ currentSong.name }}</p>
+            <p>{{ currentSong.composer }}</p>
+        </div>
       </div>
     </div>
     <div class="w-2/5 text-center px-2">
@@ -24,16 +27,18 @@
         </button>
       </div>
       <div class="flex justify-center items-center">
-        <span>0:00</span>
+        <span>{{ seek }}</span>
           <div class="w-full mx-3">
-            <span class="block h-1 w-full bg-gray-400 rounded relative">
-              <span class="block h-full w-1/2 rounded
-                bg-gradient-to-r from-purple-200 to-purple-300"></span>
+            <span class="block h-1 w-full bg-gray-400 rounded cursor-pointer relative"
+              @click.prevent="updateSeek($event)">
               <span class="block w-3 h-3 rounded-full bg-gray-300 absolute top-2/4
-                transform -translate-x-1/2 -translate-y-1/2 left-1/2"></span>
+                transform -translate-x-1/2 -translate-y-1/2"
+                :style="{ left: playerProgress }"></span>
+              <span class="block h-full rounded bg-gradient-to-r from-purple-200 to-purple-300"
+                :style="{ width: playerProgress }"></span>
             </span>
           </div>
-        <span>5:00</span>
+        <span>{{ duration }}</span>
       </div>
     </div>
     <div class="w-30"></div>
@@ -41,17 +46,25 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { computed } from 'vue';
+import { useStore } from 'vuex';
 
 export default {
   name: 'Player',
   setup() {
-    const play = ref(false);
+    const store = useStore();
+    const play = computed(() => store.getters.playing);
+    const seek = computed(() => store.state.seek);
+    const duration = computed(() => store.state.duration);
+    const playerProgress = computed(() => store.state.playerProgress);
+    const currentSong = computed(() => store.state.currentSong);
+    const updateSeek = (e) => store.dispatch('updateSeek', e);
+    console.log(currentSong);
     const toggleAudio = () => {
-      play.value = !play.value;
+      store.dispatch('toggleAudio');
     };
     return {
-      play, toggleAudio,
+      play, seek, duration, playerProgress, currentSong, toggleAudio, updateSeek,
     };
   },
 };
