@@ -1,8 +1,8 @@
 <template>
   <div class="about">
+    <Modal />
     <h1>This is an about page</h1>
     <div id="box" ref="box"></div>
-    <Modal />
   </div>
 </template>
 

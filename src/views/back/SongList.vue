@@ -1,44 +1,30 @@
 <template>
   <section>
-    <table class="table-fixed w-full border-2 border-blue-600 shadow-lg mb-10">
-      <thead>
-        <tr class="text-center text-xl h-10 bg-blue-200">
-          <th class="w-1/10">歌曲封面</th>
-          <th class="w-1/2 text-left">歌曲名稱</th>
-          <th class="w-1/5">歌手</th>
-          <th class="w-1/10">編輯</th>
-          <th class="w-1/10">刪除</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(song, i) in songs" :key="song.id"
-          class="hover:bg-yellow-400 hover:text-gray-500 h-14"
-          :class="{ 'bg-blue-300': i % 2 === 0, 'bg-blue-500': i % 2 === 1 }">
-          <td class="text-center">{{ song.id }}</td>
-          <td>{{ song.name }}</td>
-          <td class="text-center">{{ song.composer }}</td>
-          <td class="text-center">
-            <button class="py-1 px-2 rounded text-white bg-green-600">
-              <i class="fa fa-pencil-alt"></i>
-            </button>
-          </td>
-          <td class="text-center">
-            <button class="py-1 px-2 rounded text-white bg-red-600">
-              <i class="fa fa-times"></i>
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="border-2 border-blue-600 shadow-lg mb-10">
+      <div class="grid grid-cols-10 gap-4 h-14 text-white text-xl font-bold bg-blue-600">
+        <div class="flex p-1"><span class="m-auto">歌曲封面</span></div>
+        <div class="flex p-1 col-span-4"><span class="m-auto">歌曲名稱</span></div>
+        <div class="flex p-1 col-span-2"><span class="m-auto">歌手</span></div>
+        <div class="flex p-1"><span class="m-auto">狀態</span></div>
+        <div class="flex p-1"><span class="m-auto">編輯</span></div>
+        <div class="flex p-1"><span class="m-auto">刪除</span></div>
+      </div>
+      <SongItem v-for="(song, i) in songs" :key="song.id"
+        :song="song" :i="i" />
+    </div>
   </section>
 </template>
 
 <script>
 import { computed } from 'vue';
 import { useStore } from 'vuex';
+import SongItem from '@/components/back/SongItem.vue';
 
 export default {
   name: 'SongList',
+  components: {
+    SongItem,
+  },
   setup() {
     const store = useStore();
     const songs = computed(() => store.state.songList);
