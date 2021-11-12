@@ -65,6 +65,7 @@ export default {
       music_type_id: '1',
     };
     const genres = computed(() => store.state.genres);
+    const songList = computed(() => store.state.songList);
     const addSong = async (e) => {
       console.log(e);
       // const data = e;
@@ -94,12 +95,13 @@ export default {
         data,
       }).then((res) => {
         console.log(res);
+        songList.value.push(res.data.data);
       }).catch((err) => {
         console.log(err.response);
       });
     };
     return {
-      genres, addSong, songSchema, songData,
+      genres, songList, addSong, songSchema, songData,
     };
   },
 };

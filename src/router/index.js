@@ -11,7 +11,7 @@ const Admin = () => import('@/views/back/Admin.vue');
 const Manage = () => import('@/views/back/Manage.vue');
 const SongList = () => import('@/views/back/SongList.vue');
 const AddSong = () => import('@/views/back/AddSong.vue');
-const addGenre = () => import('@/views/back/addGenre.vue');
+const GenreList = () => import('@/views/back/GenreList.vue');
 const routes = [
   {
     path: '/',
@@ -82,9 +82,9 @@ const routes = [
         component: AddSong,
       },
       {
-        path: 'add-genre',
-        name: 'add-genre',
-        component: addGenre,
+        path: 'genre-list',
+        name: 'genre-list',
+        component: GenreList,
       },
     ],
   },

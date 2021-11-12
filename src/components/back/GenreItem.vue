@@ -1,17 +1,15 @@
 <template>
-  <div class="grid grid-cols-10 gap-4 hover:bg-yellow-400 hover:text-gray-500 h-14"
-    :class="{ 'bg-blue-300': i % 2 === 0, 'bg-blue-400': i % 2 === 1 }">
-    <div class="flex">
-      <div class="w-11 h-11 m-auto">
-        <img :src="song.image ? song.image : 'http://www.davidguo.idv.tw/cube/images/SQ-1/SQ2.png'" alt="song photo"
-          class="w-full h-full">
-      </div>
+  <div class="grid grid-cols-10 gap-4 hover:bg-blue-400 hover:text-gray-500 h-14"
+    :class="{ 'bg-yellow-300': i % 2 === 0, 'bg-yellow-400': i % 2 === 1 }">
+    <div class="flex"><span class="m-auto">{{ genre.id }}</span></div>
+    <div class="col-span-4 flex"><span class="m-auto">{{ genre.name }}</span></div>
+    <div class="col-span-2 flex">
+      <span class="m-auto w-10 h-10 rounded" :title="genre.color"
+        :style="{'background-color': genre.color }"></span>
     </div>
-    <div class="col-span-4 flex"><span class="m-auto">{{ song.name }}</span></div>
-    <div class="col-span-2 flex"><span class="m-auto">{{ song.composer }}</span></div>
     <div class="flex">
       <span class="m-auto w-5 h-5 rounded-full"
-        :class="song.status ? 'bg-green-600' : 'bg-red-600'"></span></div>
+        :class="genre.status ? 'bg-green-600' : 'bg-red-600'"></span></div>
     <div class="flex">
       <button class="py-1 px-2 rounded text-white bg-green-600 m-auto"
         @click.prevent="toggleEditForm">
@@ -20,34 +18,29 @@
     </div>
     <div class="flex">
       <button class="py-1 px-2 rounded text-white bg-red-600 m-auto"
-        @click.prevent="deleteSong(song.id)">
+        @click.prevent="deleteGenre(genre.id)">
         <i class="fa fa-times"></i>
       </button>
     </div>
   </div>
   <!-- 編輯 -->
   <div v-show="showEditForm">
-    <VeeForm :initial-values="song"
+    <VeeForm :initial-values="genre" @submit="editGenre"
       class="bg-green-300 flex items-center gap-4 py-2">
       <div class="text-center w-1/10">
-        <div class="border mb-4 w-11 h-11 mx-auto">
-          <img :src="preview ? preview : (song.image ? song.image : 'http://www.davidguo.idv.tw/cube/images/SQ-1/SQ2.png')"
-            alt="music photo" class="w-full h-full">
-        </div>
-        <VeeField type="file" name="image" accept="image/*" @change="previewImage($event)" />
       </div>
       <div class="w-2/5">
         <div class="namegroup relative w-4/5 mx-auto">
           <i class="fas fa-file-signature absolute top-2 left-3 text-xl"></i>
-          <VeeField type="text" name="name" placeholder="歌曲名稱"
+          <VeeField type="text" name="name" placeholder="曲風名稱"
             class="h-10 pl-10 w-full text-xl block rounded" />
         </div>
       </div>
       <div class="w-1/5">
-        <div class="composergroup relative w-4/5 mx-auto">
-          <i class="fas fa-microphone absolute top-2 left-3 text-xl"></i>
-          <VeeField type="text" name="composer" placeholder="歌手名稱"
-            class="h-10 pl-10 w-full text-xl block rounded" />
+        <div class="colorgroup relative w-4/5 mx-auto">
+          <i class="fas fa-palette absolute top-2 left-3 text-xl"></i>
+          <VeeField type="color" name="color"
+          class="h-10 pr-1 pl-10 w-full text-xl block rounded" />
         </div>
       </div>
       <div class="text-center w-1/10">
@@ -73,35 +66,31 @@
 <script>
 import { ref, toRef } from 'vue';
 import { Switch } from '@headlessui/vue';
+// import axios from 'axios';
+// import storage from '@/models/storage';
 
 export default {
-  name: 'SongItem',
+  name: 'GenreItem',
   components: { Switch },
-  props: ['song', 'i'],
-  emits: ['deleteSong'],
+  props: ['genre', 'i'],
+  emits: ['deleteGenre'],
   setup(props, { emit }) {
-    const song = toRef(props, 'song');
+    const genre = toRef(props, 'genre');
     const i = toRef(props, 'i');
     const showEditForm = ref(false);
     const enabled = ref(false);
     const toggleEditForm = () => {
       showEditForm.value = !showEditForm.value;
     };
-    const preview = ref('');
-    const previewImage = (e) => {
-      const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.addEventListener('load', (event) => {
-        preview.value = event.target.result;
-      });
+    const deleteGenre = (id) => {
+      emit('deleteGenre', id);
     };
-    const deleteSong = (id) => {
-      emit('deleteSong', id);
+    const editGenre = (e) => {
+      console.log(e);
     };
     return {
       // eslint-disable-next-line vue/no-dupe-keys
-      song, i, enabled, preview, showEditForm, previewImage, toggleEditForm, deleteSong,
+      genre, i, enabled, showEditForm, toggleEditForm, deleteGenre, editGenre,
     };
   },
 };

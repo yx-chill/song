@@ -7,7 +7,7 @@
           class="h-10 pl-10 text-xl block w-full rounded" />
           <ErrorMessage class="text-red-600" name="email" />
       </div>
-      <div class="emailgroup relative mb-3">
+      <div class="namegroup relative mb-3">
         <i class="fas fa-signature absolute top-2 left-3 text-xl"></i>
         <VeeField type="text" name="name" placeholder="暱稱"
           class="h-10 pl-10 text-xl block w-full rounded" />
@@ -19,7 +19,7 @@
           class="h-10 px-10 text-xl block w-full rounded" />
           <ErrorMessage class="text-red-600" name="password" />
       </div>
-      <div class="passwordgroup relative mb-3">
+      <div class="password_confirmationgroup relative mb-3">
         <i class="fas fa-lock absolute top-2 left-3 text-xl"></i>
         <VeeField type="password" name="password_confirmation" placeholder="確認密碼"
           class="h-10 px-10 text-xl block w-full rounded" />

@@ -10,7 +10,7 @@
         <div class="flex p-1"><span class="m-auto">刪除</span></div>
       </div>
       <SongItem v-for="(song, i) in songs" :key="song.id"
-        :song="song" :i="i" />
+        :song="song" :i="i" @deleteSong="deleteSong" />
     </div>
   </section>
 </template>
@@ -18,6 +18,8 @@
 <script>
 import { computed } from 'vue';
 import { useStore } from 'vuex';
+import axios from 'axios';
+import storage from '@/models/storage';
 import SongItem from '@/components/back/SongItem.vue';
 
 export default {
@@ -28,8 +30,25 @@ export default {
   setup() {
     const store = useStore();
     const songs = computed(() => store.state.songList);
+    const deleteSong = async (id) => {
+      await axios({
+        method: 'delete',
+        url: `https://api.sally-handmade.com/music/v1/admin/music/${id}`,
+        headers: { Authorization: `Bearer ${storage.get('adminToken')}` },
+      }).then((res) => {
+        console.log(res);
+        songs.value.forEach((item, index) => {
+          if (item.id === id) {
+            songs.value.splice(index, 1);
+          }
+        });
+      }).catch((err) => {
+        console.log(err);
+      });
+      console.log(id);
+    };
     return {
-      songs,
+      songs, deleteSong,
     };
   },
 };
