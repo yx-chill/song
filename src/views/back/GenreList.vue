@@ -1,6 +1,6 @@
 <template>
 <section>
-  <div class="container border border-yellow-600 bg-red-400 mx-auto p-3">
+  <div class="container bg-red-400 mx-auto p-3 h-full flex flex-col">
     <VeeForm @submit="addGenre" :validation-schema="genreSchema"
       :initial-values="genreData"
       class="flex justify-center items-center gap-4 p-2 mb-3">
@@ -17,7 +17,7 @@
         class="border border-white text-white px-5 py-2 text-xl rounded">
         新增</button>
     </VeeForm>
-    <div class="border-2 border-yellow-600 shadow-lg mb-10">
+    <div class="border-2 border-yellow-600 shadow-lg">
       <div class="grid grid-cols-10 gap-4 h-14 text-white text-xl font-bold bg-yellow-600">
         <div class="flex p-1"><span class="m-auto">id</span></div>
         <div class="flex p-1 col-span-4"><span class="m-auto">曲風名稱</span></div>
@@ -26,6 +26,8 @@
         <div class="flex p-1"><span class="m-auto">編輯</span></div>
         <div class="flex p-1"><span class="m-auto">刪除</span></div>
       </div>
+    </div>
+    <div class="h-full overflow-auto">
       <GenreItem v-for="(genre, i) in genres" :key="genre.id"
         :genre="genre" :i="i" @deleteGenre="deleteGenre" />
     </div>
@@ -90,5 +92,8 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+::-webkit-scrollbar {
+  display: none;
+}
 </style>

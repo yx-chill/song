@@ -19,7 +19,6 @@
 // @ is an alias to /src
 import { computed } from 'vue';
 import { useStore } from 'vuex';
-// import storage from '@/models/storage';
 
 export default {
   name: 'Home',

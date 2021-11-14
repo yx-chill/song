@@ -1,12 +1,17 @@
 <template>
   <main class="h-screen flex">
     <SideBar />
-    <router-view class="p-5 w-full overflow-auto"></router-view>
+    <router-view class="p-5 w-full overflow-auto" v-if="show"></router-view>
   </main>
 </template>
 
 <script>
-import { onBeforeMount } from 'vue';
+import {
+  ref,
+  onBeforeMount,
+  provide,
+  nextTick,
+} from 'vue';
 import { useStore } from 'vuex';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
@@ -21,6 +26,14 @@ export default {
   setup() {
     const store = useStore();
     const router = useRouter();
+    const show = ref(true);
+    const reload = () => {
+      show.value = false;
+      nextTick(() => {
+        show.value = true;
+      });
+    };
+    provide('reload', reload);
     onBeforeMount(async () => {
       if (!storage.get('adminToken')) {
         router.push({ name: 'home' });
@@ -45,6 +58,7 @@ export default {
         console.log(error);
       });
     });
+    return { show };
   },
 };
 </script>

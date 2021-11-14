@@ -18,13 +18,12 @@
           </div>
           <div class="passwordgroup relative mb-3">
             <i class="fas fa-headphones absolute top-2 left-3 text-xl"></i>
-            <!-- <i class="fas fa-sort-down absolute top-2 right-3 text-xl"></i> -->
             <VeeField as="select" name="music_type_id"
               class="password h-10 px-10 text-xl block w-full rounded mb-1">
               <option v-for="genre in genres" :key="genre.id"
                 :value="genre.id">{{ genre.name }}</option>
-                <ErrorMessage class="text-red-600" name="genre" />
             </VeeField>
+            <ErrorMessage class="text-red-600" name="genre" />
           </div>
           <UploadSong />
         </div>
@@ -62,19 +61,11 @@ export default {
       music_type_id: 'required',
     };
     const songData = {
-      music_type_id: '1',
+      music_type_id: '2',
     };
     const genres = computed(() => store.state.genres);
     const songList = computed(() => store.state.songList);
     const addSong = async (e) => {
-      console.log(e);
-      // const data = e;
-      // // eslint-disable-next-line prefer-destructuring
-      // data.file = e.file[0];
-      // // eslint-disable-next-line prefer-destructuring
-      // data.image = e.image[0];
-      console.log(e.file[0]);
-      console.log(e.image[0]);
       const data = new FormData();
       data.append('music_type_id', e.music_type_id);
       data.append('composer', e.composer);
