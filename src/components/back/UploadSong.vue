@@ -10,8 +10,6 @@
           transition duration-500 hover:text-white hover:bg-green-400
           hover:border-green-400 hover:border-solid mb-3"
           :class="{ 'bg-green-400 border-green-400 border-solid': isDragover }"
-          @drag.prevent.stop=""
-          @dragstart.prevent.stop=""
           @dragend.prevent.stop="isDragover = false"
           @dragover.prevent.stop="isDragover = true"
           @dragenter.prevent.stop="isDragover = true"
@@ -19,7 +17,8 @@
           @drop.prevent.stop="upload($event)">
         <h5>Drop your files here</h5>
       </div>
-      <VeeField type="file" name="file" accept="audio/mpeg" ref="inputSong" />
+      <VeeField type="file" name="file" accept="audio/mpeg" ref="inputSong"
+        @change="test" />
     </div>
   </div>
 </template>
@@ -34,6 +33,7 @@ export default {
     const isDragover = ref(false);
     const upload = (e) => {
       isDragover.value = false;
+      console.log(e.dataTransfer);
       console.log(inputSong.value);
       inputSong.value.files = e.dataTransfer.files;
       // const file = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
@@ -43,8 +43,11 @@ export default {
       // }
       // console.log(file);
     };
+    const test = (e) => {
+      console.log(e);
+    };
     return {
-      isDragover, upload, inputSong,
+      isDragover, upload, inputSong, test,
     };
   },
 };

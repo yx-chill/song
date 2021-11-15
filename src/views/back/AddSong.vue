@@ -1,6 +1,6 @@
 <template>
   <section>
-    <VeeForm @submit="addSong($event)" :validation-schema="songSchema" :initial-values="songData"
+    <VeeForm @submit="addSong($event)"
     class="bg-green-200 bg-opacity-80 p-4 rounded">
       <div class="flex justify-between gap-3 mb-2">
         <div class="w-3/4">
@@ -18,7 +18,7 @@
           </div>
           <div class="passwordgroup relative mb-3">
             <i class="fas fa-headphones absolute top-2 left-3 text-xl"></i>
-            <VeeField as="select" name="music_type_id"
+            <VeeField as="select" name="music_type_id" value="1"
               class="password h-10 px-10 text-xl block w-full rounded mb-1">
               <option v-for="genre in genres" :key="genre.id"
                 :value="genre.id">{{ genre.name }}</option>
@@ -40,8 +40,7 @@
 </template>
 
 <script>
-import { computed } from 'vue';
-import { useStore } from 'vuex';
+import { ref, onBeforeMount } from 'vue';
 import axios from 'axios';
 import storage from '@/models/storage';
 import UploadSong from '@/components/back/UploadSong.vue';
@@ -54,45 +53,50 @@ export default {
     UploadImg,
   },
   setup() {
-    const store = useStore();
-    const songSchema = {
-      songname: 'required|min:3|max:10|alpha_spaces',
-      composer: 'required|min:3|max:10|alpha_spaces',
-      music_type_id: 'required',
-    };
-    const songData = {
-      music_type_id: '2',
-    };
-    const genres = computed(() => store.state.genres);
-    const songList = computed(() => store.state.songList);
-    const addSong = async (e) => {
-      const data = new FormData();
-      data.append('music_type_id', e.music_type_id);
-      data.append('composer', e.composer);
-      data.append('name', e.songname);
-      data.append('file', e.file[0]);
-      if (e.image) {
-        data.append('image', e.image[0]);
-      }
-
-      console.log(data);
+    // const songSchema = {
+    //   songname: 'required|min:3|max:10|alpha_spaces',
+    //   composer: 'required|min:3|max:10|alpha_spaces',
+    //   music_type_id: 'required',
+    // };
+    const genres = ref([]);
+    onBeforeMount(async () => {
+      // 取得曲風
       await axios({
-        method: 'post',
-        url: 'https://api.sally-handmade.com/music/v1/admin/music',
-        headers: {
-          Authorization: `Bearer ${storage.get('adminToken')}`,
-          'Content-Type': 'multipart/form-data',
-        },
-        data,
+        method: 'get',
+        url: 'https://api.sally-handmade.com/music/v1/admin/music-type',
+        headers: { Authorization: `Bearer ${storage.get('adminToken')}` },
       }).then((res) => {
-        console.log(res);
-        songList.value.push(res.data.data);
-      }).catch((err) => {
-        console.log(err.response);
+        genres.value = res.data.data;
+      }).catch((error) => {
+        console.log(error);
       });
+    });
+    const addSong = async (e) => {
+      console.log(e);
+      // const data = new FormData();
+      // data.append('name', e.songname);
+      // data.append('composer', e.composer);
+      // data.append('music_type_id', e.music_type_id);
+      // data.append('file', e.file[0]);
+      // if (e.image) {
+      //   data.append('image', e.image[0]);
+      // }
+      // await axios({
+      //   method: 'post',
+      //   url: 'https://api.sally-handmade.com/music/v1/admin/music',
+      //   headers: {
+      //     Authorization: `Bearer ${storage.get('adminToken')}`,
+      //     'Content-Type': 'multipart/form-data',
+      //   },
+      //   data,
+      // }).then((res) => {
+      //   console.log(res);
+      // }).catch((err) => {
+      //   console.log(err.response);
+      // });
     };
     return {
-      genres, songList, addSong, songSchema, songData,
+      genres, addSong,
     };
   },
 };

@@ -16,7 +16,7 @@
     </div>
     <div class="flex">
       <button class="py-1 px-2 rounded text-white bg-green-600 m-auto"
-        @click.prevent="toggleEditForm">
+        @click.prevent="showEditForm = true">
         <i class="fa fa-pencil-alt"></i>
       </button>
     </div>
@@ -74,7 +74,7 @@
       </div>
       <div class="text-center w-1/10">
         <button type="button" class="px-5 py-3 text-white font-bold rounded-lg
-          bg-red-500 hover:bg-red-600" @click.prevent="toggleEditForm">取消</button>
+          bg-red-500 hover:bg-red-600" @click.prevent="hideEditForm">取消</button>
       </div>
     </VeeForm>
   </div>
@@ -83,28 +83,29 @@
 <script>
 import { ref, toRef } from 'vue';
 import { Switch } from '@headlessui/vue';
-// import axios from 'axios';
-// import storage from '@/models/storage';
 
 export default {
   name: 'SongItem',
   components: { Switch },
   props: ['song', 'i', 'genres'],
-  emits: ['deleteSong'],
+  emits: ['editSong', 'deleteSong'],
   setup(props, { emit }) {
     const song = toRef(props, 'song');
     const i = toRef(props, 'i');
     const genres = toRef(props, 'genres');
-    genres.value.forEach((item) => {
-      if (item.id === +song.value.music_type_id) {
-        song.value.genre = item.name;
-        console.log(song.value);
-      }
-    });
+    try {
+      genres.value.forEach((item) => {
+        if (item.id === +song.value.music_type_id) {
+          song.value.genre = item.name;
+        }
+      });
+    } catch (err) {
+      console.log(err);
+    }
     const showEditForm = ref(false);
     const enabled = ref(song.value.status);
-    const toggleEditForm = () => {
-      showEditForm.value = !showEditForm.value;
+    const hideEditForm = () => {
+      showEditForm.value = false;
     };
     const preview = ref('');
     const previewImage = (e) => {
@@ -115,30 +116,28 @@ export default {
         preview.value = event.target.result;
       });
     };
-    const editSong = async (e) => {
-      console.log(e);
-      // const data = new FormData();
-      // data.append('name', e.name);
-      // data.append('composer', e.composer);
-      // data.append('status', enabled.value);
-      // if (e.image) {
-      //   data.append('image', e.image[0]);
-      // }
-      // await axios({
-      //   method: 'put',
-      //   url: `https://api.sally-handmade.com/music/v1/admin/music/${id}`,
-      //   headers: {
-      //     Authorization: `Bearer ${storage.get('adminToken')}`,
-      //     'Content-Type': 'multipart/form-data',
-      //   },
-      //   data,
-      // }).then((res) => {
-      //   console.log(res);
-      //   // emit('editSong', id, res);
-      //   // songList.value.push(res.data.data);
-      // }).catch((err) => {
-      //   console.log(err.response);
-      // });
+    const editSong = async (e, id) => {
+      let statusCode = 1;
+      if (!enabled.value) {
+        statusCode = 0;
+      }
+      const data = new FormData();
+      data.append('name', e.name);
+      data.append('composer', e.composer);
+      data.append('music_type_id', e.music_type_id);
+      data.append('status', statusCode);
+      data.append('_method', 'put');
+      if (e.image) {
+        data.append('image', e.image[0]);
+        // eslint-disable-next-line prefer-destructuring
+        song.value.image = e.image[0];
+      }
+      emit('editSong', id, data);
+      song.value.name = e.name;
+      song.value.composer = e.composer;
+      song.value.music_type_id = e.music_type_id;
+      song.value.status = enabled.value;
+      showEditForm.value = false;
     };
     const deleteSong = (id) => {
       emit('deleteSong', id);
@@ -152,9 +151,9 @@ export default {
       genres,
       enabled,
       preview,
-      showEditForm,
       previewImage,
-      toggleEditForm,
+      showEditForm,
+      hideEditForm,
       editSong,
       deleteSong,
     };

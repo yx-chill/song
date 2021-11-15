@@ -1,5 +1,6 @@
 <template>
-<section>
+<section class="relative">
+  <Loading :showLoading="showLoading" :loadingMsg="loadingMsg" />
   <div class="container bg-red-400 mx-auto p-3 h-full flex flex-col">
     <VeeForm @submit="addGenre" :validation-schema="genreSchema"
       :initial-values="genreData"
@@ -29,33 +30,48 @@
     </div>
     <div class="h-full overflow-auto">
       <GenreItem v-for="(genre, i) in genres" :key="genre.id"
-        :genre="genre" :i="i" @deleteGenre="deleteGenre" />
+        :genre="genre" :i="i" @editGenre="editGenre" @deleteGenre="deleteGenre" />
     </div>
   </div>
 </section>
 </template>
 
 <script>
-import { computed } from 'vue';
-import { useStore } from 'vuex';
+import { ref, onBeforeMount } from 'vue';
 import axios from 'axios';
 import storage from '@/models/storage';
 import GenreItem from '@/components/back/GenreItem.vue';
+import Loading from '../../components/Loading.vue';
 
 export default {
   name: 'GenreList',
-  components: { GenreItem },
+  components: { GenreItem, Loading },
   setup() {
-    const store = useStore();
-    const genres = computed(() => store.state.genres);
+    const showLoading = ref(false);
+    const loadingMsg = ref('');
+    const genres = ref([]);
     const genreSchema = {
       name: 'required',
     };
     const genreData = {
       color: '#FF0000',
     };
-    console.log(genres);
+    onBeforeMount(async () => {
+      // 取得曲風
+      await axios({
+        method: 'get',
+        url: 'https://api.sally-handmade.com/music/v1/admin/music-type',
+        headers: { Authorization: `Bearer ${storage.get('adminToken')}` },
+      }).then((res) => {
+        genres.value = res.data.data;
+      }).catch((error) => {
+        console.log(error);
+      });
+    });
+    // 新增曲風
     const addGenre = async (data) => {
+      showLoading.value = true;
+      loadingMsg.value = '曲風新增中...';
       console.log(data);
       await axios({
         method: 'post',
@@ -67,7 +83,23 @@ export default {
       }).catch((err) => {
         console.log(err);
       });
+      showLoading.value = false;
+      loadingMsg.value = '';
     };
+    // 更新曲風
+    const editGenre = async (id, data) => {
+      showLoading.value = true;
+      loadingMsg.value = '曲風更新中...';
+      await axios({
+        method: 'post',
+        url: `https://api.sally-handmade.com/music/v1/admin/music-type/${id}`,
+        headers: { Authorization: `Bearer ${storage.get('adminToken')}` },
+        data,
+      });
+      showLoading.value = false;
+      loadingMsg.value = '';
+    };
+    // 刪除曲風
     const deleteGenre = async (id) => {
       await axios({
         method: 'delete',
@@ -86,7 +118,14 @@ export default {
       console.log(id);
     };
     return {
-      genres, addGenre, genreData, genreSchema, deleteGenre,
+      genres,
+      genreData,
+      genreSchema,
+      addGenre,
+      editGenre,
+      deleteGenre,
+      showLoading,
+      loadingMsg,
     };
   },
 };
