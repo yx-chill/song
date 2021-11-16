@@ -17,14 +17,23 @@
 
 <script>
 // @ is an alias to /src
-import { computed } from 'vue';
-import { useStore } from 'vuex';
+import { ref, onBeforeMount } from 'vue';
+import axios from 'axios';
 
 export default {
   name: 'Home',
   setup() {
-    const store = useStore();
-    const songList = computed(() => store.state.songList);
+    const songList = ref([]);
+    onBeforeMount(async () => {
+      await axios({
+        method: 'get',
+        url: 'https://api.sally-handmade.com/music/v1/music',
+      }).then((res) => {
+        songList.value = res.data.data;
+      }).catch((error) => {
+        console.log(error);
+      });
+    });
     return {
       songList,
     };

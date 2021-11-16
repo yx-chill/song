@@ -1,9 +1,9 @@
 <template>
   <div class="loginform bg-purple-200 bg-opacity-80 p-4 rounded">
-    <form @submit.prevent="login">
+    <VeeForm @submit="login">
       <div class="emailgroup relative mb-3">
         <i class="fas fa-user absolute top-2 left-3 text-xl"></i>
-        <input type="email" name="email" placeholder="電子郵件"
+        <VeeField type="email" name="email" placeholder="電子郵件"
           class="h-10 pl-10 text-xl block w-full rounded mb-1" v-model="email" />
       </div>
       <div class="passwordgroup relative mb-3">
@@ -11,7 +11,7 @@
         <i class="absolute top-2 right-3 text-xl cursor-pointer"
         :class="eye" @click="togglepwdtype"></i>
         <input type="password" name="password" ref="pwd" placeholder="密碼"
-          class="password h-10 px-10 text-xl block w-full rounded mb-3" v-model="password">
+          class="password h-10 px-10 text-xl block w-full rounded mb-3" v-model="password" />
         <p class="text-white text-center bg-red-500 px-2 py-1 rounded"
           v-if="errMsg">{{ errMsg }}</p>
       </div>
@@ -20,27 +20,24 @@
         :disabled="disabled">
           登入
       </button>
-    </form>
+    </VeeForm>
     <div class="pt-2 border-gray-400 border-t-2 text-center">
       <p class="font-bold mb-3">未註冊帳戶?</p>
-      <button class="block w-full rounded-full border-2 py-1.5 font-bold"
-        @click.prevent="$emit('toRegister')">
+      <router-link class="block w-full rounded-full border-2 py-1.5 font-bold"
+      :to="{ name: 'register' }">
         建立新帳號
-      </button>
+      </router-link>
     </div>
   </div>
 </template>
 
 <script>
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import axios from 'axios';
-import storage from '@/models/storage';
 
 export default {
   name: 'LoginForm',
-  setup() {
-    const router = useRouter();
+  emits: ['login'],
+  setup(_, { emit }) {
     const pwd = ref(null);
     const eye = ref('fas fa-eye');
     const togglepwdtype = () => {
@@ -56,23 +53,12 @@ export default {
     const password = ref('');
     const errMsg = ref('');
     const disabled = ref(false);
-    const login = async () => {
+    const login = () => {
       errMsg.value = '';
       if (email.value.trim() !== '' && password.value.trim() !== '') {
         disabled.value = true;
-        await axios({
-          method: 'post',
-          url: 'https://api.sally-handmade.com/music/v1/login',
-          data: { email: email.value, password: password.value },
-        }).then(async (res) => {
-          storage.set('userToken', res.data.access_token);
-          storage.set('userRefreshToken', res.data.refresh_token);
-          router.push({ name: 'home' });
-        }).catch((err) => {
-          console.log(err.response.status);
-          console.log('error');
-          errMsg.value = '信箱或密碼有誤，請重新輸入!';
-        });
+        const data = { email: email.value, password: password.value };
+        emit('login', data);
       } else {
         errMsg.value = '信箱或密碼不能為空';
       }

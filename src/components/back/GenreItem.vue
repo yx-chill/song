@@ -84,7 +84,7 @@ export default {
     };
     const editGenre = (e, id) => {
       let statusCode = 1;
-      if (enabled.value) {
+      if (!enabled.value) {
         statusCode = 0;
       }
       const data = new FormData();

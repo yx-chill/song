@@ -95,6 +95,10 @@ export default {
         url: `https://api.sally-handmade.com/music/v1/admin/music-type/${id}`,
         headers: { Authorization: `Bearer ${storage.get('adminToken')}` },
         data,
+      }).then((res) => {
+        console.log(res);
+      }).catch((err) => {
+        console.log(err);
       });
       showLoading.value = false;
       loadingMsg.value = '';

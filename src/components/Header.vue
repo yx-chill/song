@@ -9,9 +9,6 @@
         </div>
       </div>
       <div>
-
-      </div>
-      <div>
         <router-link class="text-purple-200 font-bold text-sm px-3 py-2
           rounded-sm border border-purple-200"
         :to="{ name: 'login' }" v-if="!isLogin">登入</router-link>

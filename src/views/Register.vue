@@ -1,11 +1,10 @@
 <template>
 <main class="main overflow-hidden p-20">
-  <RegisterForm @toLogin="toLogin"/>
+  <RegisterForm />
 </main>
 </template>
 
 <script>
-import { useRouter } from 'vue-router';
 import RegisterForm from '@/components/RegisterForm.vue';
 
 export default {
@@ -14,11 +13,6 @@ export default {
     RegisterForm,
   },
   setup() {
-    const router = useRouter();
-    const toLogin = () => router.push({ name: 'login' });
-    return {
-      toLogin,
-    };
   },
 };
 </script>

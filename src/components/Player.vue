@@ -5,7 +5,7 @@
       <div class="flex items-center" v-if="currentSong.name">
         <div class="w-14 h-14 mr-3">
           <img alt="song photo"
-            :src="currentSong.image ? currentSong.image : 'http://www.davidguo.idv.tw/cube/images/SQ-1/SQ2.png'">
+            :src="currentSong.image || 'http://www.davidguo.idv.tw/cube/images/SQ-1/SQ2.png'">
         </div>
         <div>
             <p class=" text-base mb-1">{{ currentSong.name }}</p>
@@ -59,7 +59,6 @@ export default {
     const playerProgress = computed(() => store.state.playerProgress);
     const currentSong = computed(() => store.state.currentSong);
     const updateSeek = (e) => store.dispatch('updateSeek', e);
-    console.log(currentSong);
     const toggleAudio = () => {
       store.dispatch('toggleAudio');
     };

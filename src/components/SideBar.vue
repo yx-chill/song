@@ -33,16 +33,14 @@
 </template>
 
 <script>
-import { computed, ref } from 'vue';
-import { useStore } from 'vuex';
+import { toRef } from 'vue';
 
 export default {
   name: 'SideBar',
-  props: ['isLogin'],
+  props: ['isLogin', 'username'],
   setup(props) {
-    const store = useStore();
-    const isLogin = ref(props.isLogin);
-    const username = computed(() => store.state.username);
+    const isLogin = toRef(props, 'isLogin');
+    const username = toRef(props, 'username');
     return {
       // eslint-disable-next-line vue/no-dupe-keys
       isLogin, username,

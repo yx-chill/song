@@ -12,6 +12,8 @@ const Manage = () => import('@/views/back/Manage.vue');
 const SongList = () => import('@/views/back/SongList.vue');
 const AddSong = () => import('@/views/back/AddSong.vue');
 const GenreList = () => import('@/views/back/GenreList.vue');
+const Genre = () => import('@/views/Genre.vue');
+
 const routes = [
   {
     path: '/',
@@ -33,8 +35,8 @@ const routes = [
         component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
       },
       {
-        name: 'song',
         path: 'song/:id',
+        name: 'song',
         component: Song,
       },
       {
@@ -46,6 +48,11 @@ const routes = [
         path: 'search',
         name: 'search',
         component: Search,
+      },
+      {
+        path: 'genre/:genre',
+        name: 'genre',
+        component: Genre,
       },
     ],
   },
