@@ -12,9 +12,6 @@ export default createStore({
     playerProgress: '0%',
   },
   mutations: {
-    getUsername(state, name) {
-      state.username = name;
-    },
     toggleSearchShow(state) {
       state.showSearch = !state.showSearch;
     },

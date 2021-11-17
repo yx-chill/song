@@ -3,7 +3,7 @@
     <SideBar :isLogin="isLogin" :username="username" />
     <section class="w-full flex flex-col">
       <Header :isLogin="isLogin" />
-      <div class="bg-gray-700 flex-grow overflow-auto p-7">
+      <div class="bg-gray-700 flex-grow overflow-auto">
         <router-view />
       </div>
     </section>

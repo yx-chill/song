@@ -1,11 +1,15 @@
 <template>
-  <div class="text-white">
+  <div class="text-white p-7">
     <h2 class="text-2xl font-bold mb-9">瀏覽全部</h2>
     <ul class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-5">
       <li v-for="genre in genres" :key="genre.id"
-        class="w-full aspect-w-1 aspect-h-1 rounded-md"
+        class="w-full aspect-w-1 aspect-h-1 rounded-md overflow-hidden"
         :style="{ 'background-color': genre.color }">
-        <router-link :to="{ name: 'genre', params: { genre: genre.name } }">
+        <router-link :to="{ name: 'genre', params: { genre: genre.name } }"
+          class="genre p-2">
+          <h3 class="text-2xl rounded bg-black bg-opacity-40">{{ genre.name }}</h3>
+          <img :src="`https://picsum.photos/64/64?random=${genre.id}`" alt="genre photo"
+          class="pic w-16 h-16 absolute bottom-1 -left-2 transform rotate-45">
         </router-link>
         </li>
     </ul>
@@ -13,7 +17,7 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, onBeforeUnmount } from 'vue';
 import { useStore } from 'vuex';
 import axios from 'axios';
 
@@ -23,15 +27,16 @@ export default {
     const store = useStore();
     store.commit('toggleSearchShow');
     const genres = ref([]);
-    store.commit('toggleSearchShow');
     axios({
       method: 'get',
       url: 'https://api.sally-handmade.com/music/v1/music-type',
     }).then((res) => {
-      console.log(res.data.data);
       genres.value = res.data.data;
     }).catch((error) => {
       console.log(error);
+    });
+    onBeforeUnmount(() => {
+      store.commit('toggleSearchShow');
     });
     return {
       genres,
@@ -39,3 +44,13 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.pic {
+  transition: .4s;
+}
+.genre:hover .pic {
+  transform: rotate(0);
+  left: 4px;
+}
+</style>
