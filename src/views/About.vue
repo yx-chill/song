@@ -9,11 +9,29 @@
         bg-gray-500 bg-opacity-40 p-5 -top-full" ref="bg">123</div>
     </div>
   </div>
+  <div>
+    <button class="bg-gray-500" @click.prevent="del">刪除</button>
+    <ul>
+      <li v-for="test in testt.song" :key="test">
+        {{ test.a }}--{{ test.b }}
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, reactive } from 'vue';
 // import Modal from '@/components/Modal.vue';
+
+const testt = reactive({
+  song: [
+    { id: 1, a: '123', b: 'xyz' },
+    { id: 2, a: '456', b: 'abc' },
+    { id: 3, a: '789', b: 'ijk' },
+    { id: 4, a: '159', b: 'def' },
+    { id: 5, a: '357', b: 'zzz' },
+  ],
+});
 
 export default {
   name: 'About',
@@ -21,6 +39,13 @@ export default {
     // Modal,
   },
   setup() {
+    const del = () => {
+      for (let i = 0; i < testt.song.length; i += 1) {
+        if (testt.song[i].id === 5) {
+          delete testt.song[i];
+        }
+      }
+    };
     const bg = ref(null);
     const box = ref(null);
     const hoverDir = (e) => {
@@ -86,7 +111,9 @@ export default {
         }
       }
     };
-    return { box, bg, hoverDir };
+    return {
+      box, bg, hoverDir, testt, del,
+    };
   },
 };
 </script>

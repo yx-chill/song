@@ -1,6 +1,6 @@
 <template>
   <section class="relative">
-    <Loading :showLoading="showLoading" :loadingMsg="loadingMsg" />
+    <Loading v-if="loadingData.showLoading" :message="loadingData.loadingMsg" />
     <VeeForm @submit="addSong($event)" :validation-schema="songSchema"
     class="bg-green-200 bg-opacity-80 p-4 rounded">
       <div class="flex justify-between gap-3 mb-2">
@@ -46,7 +46,7 @@ import axios from 'axios';
 import storage from '@/models/storage';
 import UploadSong from '@/components/back/UploadSong.vue';
 import UploadImg from '@/components/back/UploadImg.vue';
-import Loading from '@/components/Loading.vue';
+import Loading, { useLoading } from '@/components/Loading.vue';
 
 export default {
   name: 'AddSong',
@@ -61,8 +61,7 @@ export default {
       composer: 'required|min:3|max:10|alpha_spaces',
       music_type_id: 'required',
     };
-    const showLoading = ref(false);
-    const loadingMsg = ref('');
+    const { loadingData, showLoading, hideLoading } = useLoading();
     const genres = ref([]);
     onBeforeMount(async () => {
       // 取得曲風
@@ -86,10 +85,7 @@ export default {
       console.log(file);
     };
     const addSong = async (e) => {
-      showLoading.value = true;
-      loadingMsg.value = '新增歌曲中...';
-      console.log(e);
-      console.log(file);
+      showLoading('新增歌曲中...');
       const data = new FormData();
       data.append('name', e.songname);
       data.append('composer', e.composer);
@@ -111,11 +107,10 @@ export default {
       }).catch((err) => {
         console.log(err.response);
       });
-      showLoading.value = false;
-      loadingMsg.value = '';
+      hideLoading();
     };
     return {
-      genres, uploadSong, addSong, songSchema, showLoading, loadingMsg,
+      genres, uploadSong, addSong, songSchema, loadingData,
     };
   },
 };

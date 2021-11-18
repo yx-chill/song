@@ -1,7 +1,7 @@
 <template>
 <div class="absolute top-0 right-0 bottom-0 left-0 bg-gray-800 opacity-80
-      flex flex-col justify-center items-center z-10" v-if="showLoading">
-      <p class="text-white text-2xl font-bold mb-10">{{ loadingMsg }}</p>
+      flex flex-col justify-center items-center z-10">
+      <p class="text-white text-2xl font-bold mb-10">{{ message }}</p>
     <div class="la-line-scale-pulse-out la-2x">
       <div></div>
       <div></div>
@@ -13,17 +13,27 @@
 </template>
 
 <script>
-import { toRef } from 'vue';
+import { reactive } from 'vue';
 
 export default {
   name: 'Loading',
-  props: ['showLoading', 'loadingMsg'],
-  setup(props) {
-    const showLoading = toRef(props, 'showLoading');
-    const loadingMsg = toRef(props, 'loadingMsg');
-    // eslint-disable-next-line vue/no-dupe-keys
-    return { showLoading, loadingMsg };
-  },
+  props: ['message'],
+};
+
+export const useLoading = () => {
+  const loadingData = reactive({
+    showLoading: false,
+    loadingMsg: '',
+  });
+  const showLoading = (message) => {
+    loadingData.showLoading = true;
+    loadingData.loadingMsg = message;
+  };
+  const hideLoading = () => {
+    loadingData.showLoading = false;
+    loadingData.loadingMsg = '';
+  };
+  return { loadingData, showLoading, hideLoading };
 };
 </script>
 

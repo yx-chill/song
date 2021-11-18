@@ -29,7 +29,7 @@
   </div>
   <!-- 編輯 -->
   <div v-show="showEditForm">
-    <VeeForm @submit="editSong($event, song.id)"
+    <VeeForm :validation-schema="songSchema" @submit="editSong($event, song.id)"
       class="bg-green-300 flex items-center gap-4 py-2">
       <div class="text-center w-1/10">
         <div class="border mb-4 w-11 h-11 mx-auto">
@@ -43,6 +43,7 @@
           <i class="fas fa-file-signature absolute top-2 left-3 text-xl"></i>
           <VeeField type="text" name="name" placeholder="歌曲名稱" :value="song.name"
             class="h-10 pl-10 w-full text-xl block rounded" />
+            <ErrorMessage class="text-red-600" name="name" />
         </div>
       </div>
       <div class="w-1/5">
@@ -50,6 +51,7 @@
           <i class="fas fa-microphone absolute top-2 left-3 text-xl"></i>
           <VeeField type="text" name="composer" placeholder="歌手名稱" :value="song.composer"
             class="h-10 pl-10 w-full text-xl block rounded" />
+            <ErrorMessage class="text-red-600" name="composer" />
         </div>
       </div>
       <div class="w-1/10">
@@ -81,8 +83,13 @@
 </template>
 
 <script>
-import { ref, toRef } from 'vue';
+import { ref, toRef, reactive } from 'vue';
 import { Switch } from '@headlessui/vue';
+
+const songSchema = reactive({
+  name: 'required|min:3|max:20',
+  composer: 'required|min:3|max:20',
+});
 
 export default {
   name: 'SongItem',
@@ -143,6 +150,7 @@ export default {
       emit('deleteSong', id);
     };
     return {
+      songSchema,
       // eslint-disable-next-line vue/no-dupe-keys
       song,
       // eslint-disable-next-line vue/no-dupe-keys

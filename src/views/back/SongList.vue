@@ -1,6 +1,6 @@
 <template>
   <section class="h-screen flex flex-col relative">
-    <Loading :showLoading="showLoading" :loadingMsg="loadingMsg" />
+    <Loading v-if="loadingData.showLoading" :message="loadingData.loadingMsg" />
     <div class="border-2 border-blue-600 shadow-lg">
       <div class="grid grid-cols-10 gap-4 h-14 text-white text-xl font-bold bg-blue-600">
         <div class="flex p-1"><span class="m-auto">歌曲封面</span></div>
@@ -20,11 +20,88 @@
 </template>
 
 <script>
-import { ref, onBeforeMount } from 'vue';
+import { reactive, toRefs } from 'vue';
 import axios from 'axios';
 import storage from '@/models/storage';
 import SongItem from '@/components/back/SongItem.vue';
-import Loading from '@/components/Loading.vue';
+import Loading, { useLoading } from '@/components/Loading.vue';
+
+const { loadingData, showLoading, hideLoading } = useLoading();
+// 取得音樂
+const songList = reactive({ songs: [] });
+const handleSongs = () => {
+  const getSongs = (async () => {
+    await axios({
+      method: 'get',
+      url: 'https://api.sally-handmade.com/music/v1/admin/music',
+      headers: { Authorization: `Bearer ${storage.get('adminToken')}` },
+    }).then((res) => {
+      songList.songs = res.data.data;
+    }).catch((error) => {
+      console.log(error);
+    });
+  });
+  return getSongs;
+};
+// 取得曲風
+const handleGenres = () => {
+  const genreList = reactive({ genres: [] });
+  const getGenres = (async () => {
+    await axios({
+      method: 'get',
+      url: 'https://api.sally-handmade.com/music/v1/admin/music-type',
+      headers: { Authorization: `Bearer ${storage.get('adminToken')}` },
+    }).then((res) => {
+      genreList.genres = res.data.data;
+    }).catch((error) => {
+      console.log(error);
+    });
+  });
+  return { genreList, getGenres };
+};
+// 編輯音樂
+const handleEditSong = () => {
+  const editSong = async (id, data) => {
+    showLoading('歌曲更新中...');
+    await axios({
+      method: 'post',
+      url: `https://api.sally-handmade.com/music/v1/admin/music/${id}`,
+      headers: {
+        Authorization: `Bearer ${storage.get('adminToken')}`,
+        'Content-Type': 'multipart/form-data',
+      },
+      data,
+    }).then((res) => {
+      console.log(res);
+    }).catch((err) => {
+      console.log(err.response);
+    });
+    hideLoading();
+  };
+  return editSong;
+};
+// 刪除音樂
+const handleDeleteSong = () => {
+  const deleteSong = async (id) => {
+    showLoading('歌曲刪除中...');
+    await axios({
+      method: 'delete',
+      url: `https://api.sally-handmade.com/music/v1/admin/music/${id}`,
+      headers: { Authorization: `Bearer ${storage.get('adminToken')}` },
+    }).then((res) => {
+      console.log(res);
+      songList.songs.forEach((item, index) => {
+        if (item.id === id) {
+          songList.songs.splice(index, 1);
+        }
+      });
+    }).catch((err) => {
+      console.log(err);
+    });
+    hideLoading();
+  };
+  return deleteSong;
+};
 
 export default {
   name: 'SongList',
@@ -32,75 +109,16 @@ export default {
     SongItem, Loading,
   },
   setup() {
-    const songs = ref([]);
-    const genres = ref([]);
-    const showLoading = ref(false);
-    const loadingMsg = ref('測試測試...');
-    onBeforeMount(async () => {
-      // 取得歌曲列表
-      await axios({
-        method: 'get',
-        url: 'https://api.sally-handmade.com/music/v1/admin/music',
-        headers: { Authorization: `Bearer ${storage.get('adminToken')}` },
-      }).then((res) => {
-        songs.value = res.data.data;
-      }).catch((error) => {
-        console.log(error);
-      });
-      // 取得曲風
-      await axios({
-        method: 'get',
-        url: 'https://api.sally-handmade.com/music/v1/admin/music-type',
-        headers: { Authorization: `Bearer ${storage.get('adminToken')}` },
-      }).then((res) => {
-        genres.value = res.data.data;
-      }).catch((error) => {
-        console.log(error);
-      });
-    });
-    // 更新歌曲
-    const editSong = async (id, data) => {
-      showLoading.value = true;
-      loadingMsg.value = '歌曲更新中...';
-      await axios({
-        method: 'post',
-        url: `https://api.sally-handmade.com/music/v1/admin/music/${id}`,
-        headers: {
-          Authorization: `Bearer ${storage.get('adminToken')}`,
-          'Content-Type': 'multipart/form-data',
-        },
-        data,
-      }).then((res) => {
-        console.log(res);
-      }).catch((err) => {
-        console.log(err.response);
-      });
-      showLoading.value = false;
-      loadingMsg.value = '';
-    };
-    // 刪除歌曲
-    const deleteSong = async (id) => {
-      showLoading.value = true;
-      loadingMsg.value = '歌曲刪除中...';
-      await axios({
-        method: 'delete',
-        url: `https://api.sally-handmade.com/music/v1/admin/music/${id}`,
-        headers: { Authorization: `Bearer ${storage.get('adminToken')}` },
-      }).then((res) => {
-        console.log(res);
-        songs.value.forEach((item, index) => {
-          if (item.id === id) {
-            songs.value.splice(index, 1);
-          }
-        });
-      }).catch((err) => {
-        console.log(err);
-      });
-      showLoading.value = false;
-      loadingMsg.value = '';
-    };
+    const getSongs = handleSongs();
+    const { genreList, getGenres } = handleGenres();
+    getSongs();
+    getGenres();
+    const { songs } = toRefs(songList);
+    const { genres } = toRefs(genreList);
+    const editSong = handleEditSong();
+    const deleteSong = handleDeleteSong();
     return {
-      songs, deleteSong, genres, showLoading, loadingMsg, editSong,
+      loadingData, songs, genres, editSong, deleteSong,
     };
   },
 };
@@ -113,5 +131,4 @@ export default {
 .w-1\/10 {
   width: 10%;
 }
-
 </style>

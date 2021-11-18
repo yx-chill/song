@@ -1,6 +1,6 @@
 <template>
 <section class="relative">
-  <Loading :showLoading="showLoading" :loadingMsg="loadingMsg" />
+  <Loading v-if="loadingData.showLoading" :message="loadingData.loadingMsg" />
   <div class="container bg-red-400 mx-auto p-3 h-full flex flex-col">
     <VeeForm @submit="addGenre" :validation-schema="genreSchema"
       :initial-values="genreData"
@@ -41,14 +41,13 @@ import { ref, onBeforeMount } from 'vue';
 import axios from 'axios';
 import storage from '@/models/storage';
 import GenreItem from '@/components/back/GenreItem.vue';
-import Loading from '../../components/Loading.vue';
+import Loading, { useLoading } from '../../components/Loading.vue';
 
 export default {
   name: 'GenreList',
   components: { GenreItem, Loading },
   setup() {
-    const showLoading = ref(false);
-    const loadingMsg = ref('');
+    const { loadingData, showLoading, hideLoading } = useLoading();
     const genres = ref([]);
     const genreSchema = {
       name: 'required',
@@ -70,8 +69,7 @@ export default {
     });
     // 新增曲風
     const addGenre = async (data) => {
-      showLoading.value = true;
-      loadingMsg.value = '曲風新增中...';
+      showLoading('曲風新增中...');
       console.log(data);
       await axios({
         method: 'post',
@@ -83,13 +81,11 @@ export default {
       }).catch((err) => {
         console.log(err);
       });
-      showLoading.value = false;
-      loadingMsg.value = '';
+      hideLoading();
     };
     // 更新曲風
     const editGenre = async (id, data) => {
-      showLoading.value = true;
-      loadingMsg.value = '曲風更新中...';
+      showLoading('曲風更新中...');
       await axios({
         method: 'post',
         url: `https://api.sally-handmade.com/music/v1/admin/music-type/${id}`,
@@ -100,11 +96,11 @@ export default {
       }).catch((err) => {
         console.log(err);
       });
-      showLoading.value = false;
-      loadingMsg.value = '';
+      hideLoading();
     };
     // 刪除曲風
     const deleteGenre = async (id) => {
+      showLoading('曲風刪除中...');
       await axios({
         method: 'delete',
         url: `https://api.sally-handmade.com/music/v1/admin/music-type/${id}`,
@@ -119,7 +115,7 @@ export default {
       }).catch((err) => {
         console.log(err);
       });
-      console.log(id);
+      hideLoading();
     };
     return {
       genres,
@@ -128,8 +124,7 @@ export default {
       addGenre,
       editGenre,
       deleteGenre,
-      showLoading,
-      loadingMsg,
+      loadingData,
     };
   },
 };
