@@ -6,7 +6,7 @@
 import { useRoute } from 'vue-router';
 
 export default {
-  name: 'Type',
+  name: 'Genre',
   setup() {
     const route = useRoute();
     const { genre } = route.params;

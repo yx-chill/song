@@ -12,7 +12,7 @@
         :class="genre.status ? 'bg-green-600' : 'bg-red-600'"></span></div>
     <div class="flex">
       <button class="py-1 px-2 rounded text-white bg-green-600 m-auto"
-        @click.prevent="showEditForm = true">
+        @click.prevent="editForm = true">
         <i class="fa fa-pencil-alt"></i>
       </button>
     </div>
@@ -24,7 +24,7 @@
     </div>
   </div>
   <!-- 編輯 -->
-  <div v-show="showEditForm">
+  <div v-show="editForm">
     <VeeForm :initial-values="genre" @submit="editGenre($event, genre.id)"
       class="bg-green-300 flex items-center gap-4 py-2">
       <div class="text-center w-1/10">
@@ -57,7 +57,7 @@
       </div>
       <div class="text-center w-1/10">
         <button type="button" class="px-5 py-3 text-white font-bold rounded-lg
-          bg-red-500 hover:bg-red-600" @click.prevent="hideEditForm">取消</button>
+          bg-red-500 hover:bg-red-600" @click.prevent="editForm = false">取消</button>
       </div>
     </VeeForm>
   </div>
@@ -66,8 +66,26 @@
 <script>
 import { ref, toRef } from 'vue';
 import { Switch } from '@headlessui/vue';
-// import axios from 'axios';
-// import storage from '@/models/storage';
+
+// 更新曲風
+const handleEditForm = (genre, emit) => {
+  const editForm = ref(false);
+  const enabled = ref(genre.value.status);
+  const editGenre = (e, id) => {
+    let statusCode = 1;
+    if (!enabled.value) {
+      statusCode = 0;
+    }
+    const data = new FormData();
+    data.append('name', e.name);
+    data.append('color', e.color);
+    data.append('status', statusCode);
+    data.append('_method', 'put');
+    emit('editGenre', id, data);
+    editForm.value = false;
+  };
+  return { editForm, enabled, editGenre };
+};
 
 export default {
   name: 'GenreItem',
@@ -77,33 +95,13 @@ export default {
   setup(props, { emit }) {
     const genre = toRef(props, 'genre');
     const i = toRef(props, 'i');
-    const showEditForm = ref(false);
-    const enabled = ref(genre.value.status);
-    const hideEditForm = () => {
-      showEditForm.value = false;
-    };
-    const editGenre = (e, id) => {
-      let statusCode = 1;
-      if (!enabled.value) {
-        statusCode = 0;
-      }
-      const data = new FormData();
-      data.append('name', e.name);
-      data.append('color', e.color);
-      data.append('status', statusCode);
-      data.append('_method', 'put');
-      emit('editGenre', id, data);
-      genre.value.name = e.name;
-      genre.value.color = e.color;
-      genre.value.status = enabled.value;
-      showEditForm.value = false;
-    };
+    const { editForm, enabled, editGenre } = handleEditForm(genre, emit);
     const deleteGenre = (id) => {
       emit('deleteGenre', id);
     };
     return {
       // eslint-disable-next-line vue/no-dupe-keys
-      genre, i, enabled, showEditForm, hideEditForm, deleteGenre, editGenre,
+      genre, i, enabled, editForm, deleteGenre, editGenre,
     };
   },
 };

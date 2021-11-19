@@ -33,11 +33,7 @@
 </template>
 
 <script>
-import {
-  computed,
-  ref,
-  reactive,
-} from 'vue';
+import { computed, ref, reactive } from 'vue';
 import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';
 import axios from 'axios';

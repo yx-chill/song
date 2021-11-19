@@ -41,12 +41,74 @@
 </template>
 
 <script>
-import { ref, onBeforeMount } from 'vue';
+import { reactive, toRefs } from 'vue';
 import axios from 'axios';
 import storage from '@/models/storage';
 import UploadSong from '@/components/back/UploadSong.vue';
 import UploadImg from '@/components/back/UploadImg.vue';
 import Loading, { useLoading } from '@/components/Loading.vue';
+
+const { loadingData, showLoading, hideLoading } = useLoading();
+// 取得曲風
+const handleGenres = () => {
+  const genreData = reactive({ genres: [] });
+  const getGenres = async () => {
+    await axios({
+      method: 'get',
+      url: 'https://api.sally-handmade.com/music/v1/admin/music-type',
+      headers: { Authorization: `Bearer ${storage.get('adminToken')}` },
+    }).then((res) => {
+      genreData.genres = res.data.data;
+    }).catch((error) => {
+      console.log(error);
+    });
+  };
+  const { genres } = toRefs(genreData);
+  return { genres, getGenres };
+};
+
+// 取得音樂檔
+const handleUploadSong = () => {
+  const songData = reactive({ file: [] });
+  const uploadSong = (e) => {
+    songData.file = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
+    if (songData.file.type !== 'audio/mpeg') {
+      console.log('請選擇音樂檔'); // TODO
+      return;
+    }
+    console.log(songData.file);
+  };
+  return { songData, uploadSong };
+};
+
+const handleAddSong = (songData) => {
+  const addSong = async (e) => {
+    showLoading('新增歌曲中...');
+    const data = new FormData();
+    data.append('name', e.songname);
+    data.append('composer', e.composer);
+    data.append('music_type_id', e.music_type_id);
+    data.append('file', songData.file);
+    if (e.image) {
+      data.append('image', e.image[0]);
+    }
+    await axios({
+      method: 'post',
+      url: 'https://api.sally-handmade.com/music/v1/admin/music',
+      headers: {
+        Authorization: `Bearer ${storage.get('adminToken')}`,
+        'Content-Type': 'multipart/form-data',
+      },
+      data,
+    }).then((res) => {
+      console.log(res);
+    }).catch((err) => {
+      console.log(err.response);
+    });
+    hideLoading();
+  };
+  return addSong;
+};
 
 export default {
   name: 'AddSong',
@@ -61,54 +123,10 @@ export default {
       composer: 'required|min:3|max:10|alpha_spaces',
       music_type_id: 'required',
     };
-    const { loadingData, showLoading, hideLoading } = useLoading();
-    const genres = ref([]);
-    onBeforeMount(async () => {
-      // 取得曲風
-      await axios({
-        method: 'get',
-        url: 'https://api.sally-handmade.com/music/v1/admin/music-type',
-        headers: { Authorization: `Bearer ${storage.get('adminToken')}` },
-      }).then((res) => {
-        genres.value = res.data.data;
-      }).catch((error) => {
-        console.log(error);
-      });
-    });
-    let file = '';
-    const uploadSong = (e) => {
-      file = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
-      if (file.type !== 'audio/mpeg') {
-        console.log('請選擇音樂檔'); // TODO
-        return;
-      }
-      console.log(file);
-    };
-    const addSong = async (e) => {
-      showLoading('新增歌曲中...');
-      const data = new FormData();
-      data.append('name', e.songname);
-      data.append('composer', e.composer);
-      data.append('music_type_id', e.music_type_id);
-      data.append('file', file);
-      if (e.image) {
-        data.append('image', e.image[0]);
-      }
-      await axios({
-        method: 'post',
-        url: 'https://api.sally-handmade.com/music/v1/admin/music',
-        headers: {
-          Authorization: `Bearer ${storage.get('adminToken')}`,
-          'Content-Type': 'multipart/form-data',
-        },
-        data,
-      }).then((res) => {
-        console.log(res);
-      }).catch((err) => {
-        console.log(err.response);
-      });
-      hideLoading();
-    };
+    const { songData, uploadSong } = handleUploadSong();
+    const { genres, getGenres } = handleGenres();
+    const addSong = handleAddSong(songData);
+    getGenres();
     return {
       genres, uploadSong, addSong, songSchema, loadingData,
     };

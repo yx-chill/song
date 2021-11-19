@@ -28,8 +28,8 @@ import Loading, { useLoading } from '@/components/Loading.vue';
 
 const { loadingData, showLoading, hideLoading } = useLoading();
 // 取得音樂
-const songList = reactive({ songs: [] });
 const handleSongs = () => {
+  const songList = reactive({ songs: [] });
   const getSongs = (async () => {
     await axios({
       method: 'get',
@@ -41,7 +41,7 @@ const handleSongs = () => {
       console.log(error);
     });
   });
-  return getSongs;
+  return { songList, getSongs };
 };
 // 取得曲風
 const handleGenres = () => {
@@ -57,7 +57,8 @@ const handleGenres = () => {
       console.log(error);
     });
   });
-  return { genreList, getGenres };
+  const { genres } = toRefs(genreList);
+  return { genres, getGenres };
 };
 // 編輯音樂
 const handleEditSong = () => {
@@ -81,7 +82,7 @@ const handleEditSong = () => {
   return editSong;
 };
 // 刪除音樂
-const handleDeleteSong = () => {
+const handleDeleteSong = (songList) => {
   const deleteSong = async (id) => {
     showLoading('歌曲刪除中...');
     await axios({
@@ -109,14 +110,13 @@ export default {
     SongItem, Loading,
   },
   setup() {
-    const getSongs = handleSongs();
-    const { genreList, getGenres } = handleGenres();
+    const { songList, getSongs } = handleSongs();
+    const { genres, getGenres } = handleGenres();
+    const editSong = handleEditSong();
+    const deleteSong = handleDeleteSong(songList);
     getSongs();
     getGenres();
     const { songs } = toRefs(songList);
-    const { genres } = toRefs(genreList);
-    const editSong = handleEditSong();
-    const deleteSong = handleDeleteSong();
     return {
       loadingData, songs, genres, editSong, deleteSong,
     };

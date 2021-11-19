@@ -1,104 +1,46 @@
 <template>
-  <div class="fixed flex items-center justify-center">
-    <button
-      type="button"
-      @click="openModal"
-      class="px-4 py-2 text-sm font-medium text-white bg-black rounded-md
-        bg-opacity-20 hover:bg-opacity-30focus:outline-none focus-visible:ring-2
-        focus-visible:ring-white focus-visible:ring-opacity-75">
-      Open dialog
-    </button>
-  </div>
-  <TransitionRoot appear :show="isOpen" as="template">
-    <Dialog as="div" @close="closeModal">
-      <div class="fixed inset-0 z-10 overflow-y-auto">
-        <div class="min-h-screen px-4 text-center">
-          <TransitionChild
-            as="template"
-            enter="duration-300 ease-out"
-            enter-from="opacity-0"
-            enter-to="opacity-100"
-            leave="duration-200 ease-in"
-            leave-from="opacity-100"
-            leave-to="opacity-0">
-            <DialogOverlay class="fixed inset-0" />
-          </TransitionChild>
-
-          <span class="inline-block h-screen align-middle" aria-hidden="true">
-            &#8203;
-          </span>
-
-          <TransitionChild
-            as="template"
-            enter="duration-300 ease-out"
-            enter-from="opacity-0 scale-95"
-            enter-to="opacity-100 scale-100"
-            leave="duration-200 ease-in"
-            leave-from="opacity-100 scale-100"
-            leave-to="opacity-0 scale-95">
-            <div
-              class="inline-block w-full max-w-md p-6 my-8 overflow-hidden
-                text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-              <DialogTitle as="h3"
-                class="text-lg font-medium leading-6 text-gray-900">
-                Payment successful
-              </DialogTitle>
-              <div class="mt-2">
-                <p class="text-sm text-gray-500">
-                  Your payment has been successfully submitted. We’ve sent you
-                  an email with all of the details of your order.
-                </p>
-              </div>
-
-              <div class="mt-4">
-                <button
-                  type="button"
-                  class="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900
-                  bg-blue-100 border border-transparent rounded-md hover:bg-blue-200
-                    focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
-                    focus-visible:ring-blue-500" @click="closeModal">
-                  Got it, thanks!
-                </button>
-              </div>
-            </div>
-          </TransitionChild>
-        </div>
+  <div class="absolute inset-0 flex justify-center items-center">
+    <div class="w-full max-w-md p-6 overflow-hidden text-left bg-white
+      align-middle transition-all transform shadow-xl rounded-2xl"
+      enter="duration-300 ease-out"
+      enter-from="opacity-0 scale-95"
+      enter-to="opacity-100 scale-100"
+      leave="duration-200 ease-in"
+      leave-from="opacity-100 scale-100"
+      leave-to="opacity-0 scale-95">
+      <div class="mt-2">
+        <p class="text-sm text-gray-500">確定要刪除嗎?</p>
       </div>
-    </Dialog>
-  </TransitionRoot>
+      <div class="mt-4">
+        <button type="button" class="inline-flex justify-center px-4 py-2 text-sm
+          font-medium text-green-900 bg-green-100 border border-transparent rounded-md
+          hover:bg-green-200 focus:outline-none focus-visible:ring-2 mr-3
+          focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+          @click.prevent="deleteData">確定</button>
+        <button type="button" class="inline-flex justify-center px-4 py-2 text-sm font-medium
+          text-red-900 bg-red-100 border border-transparent rounded-md hover:bg-red-200
+            focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
+            focus-visible:ring-blue-500" @click.prevent="cancel">取消
+        </button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import { ref } from 'vue';
-import {
-  TransitionRoot,
-  TransitionChild,
-  Dialog,
-  DialogOverlay,
-  DialogTitle,
-} from '@headlessui/vue';
 
 export default {
-  components: {
-    TransitionRoot,
-    TransitionChild,
-    Dialog,
-    DialogOverlay,
-    DialogTitle,
-  },
-
-  setup() {
-    const isOpen = ref(true);
-
-    return {
-      isOpen,
-      closeModal() {
-        isOpen.value = false;
-      },
-      openModal() {
-        isOpen.value = true;
-      },
+  name: 'Modal',
+  props: [],
+  emits: ['deleteData', 'cancel'],
+  setup(props, { emit }) {
+    const deleteData = () => {
+      emit('deleteData');
     };
+    const cancel = () => {
+      emit('cancel');
+    };
+    return { deleteData, cancel };
   },
 };
 </script>
