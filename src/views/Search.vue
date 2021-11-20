@@ -7,17 +7,17 @@
         :style="{ 'background-color': genre.color }">
         <router-link :to="{ name: 'genre', params: { genre: genre.name } }"
           class="genre p-2">
-          <h3 class="text-2xl rounded bg-black bg-opacity-40">{{ genre.name }}</h3>
-          <img :src="`https://picsum.photos/64/64?random=${genre.id}`" alt="genre photo"
-          class="pic w-16 h-16 absolute bottom-1 -left-2 transform rotate-45">
+          <h3 class="text-2xl font-bold rounded">{{ genre.name }}</h3>
+          <img :src="`https://picsum.photos/80/80?random=${genre.id}`" alt="genre photo"
+          class="pic w-20 h-20 absolute bottom-1 -left-2 transform rotate-45">
         </router-link>
-        </li>
+      </li>
     </ul>
   </div>
 </template>
 
 <script>
-import { ref, onBeforeUnmount } from 'vue';
+import { reactive, toRefs, onBeforeUnmount } from 'vue';
 import { useStore } from 'vuex';
 import axios from 'axios';
 
@@ -26,18 +26,19 @@ export default {
   setup() {
     const store = useStore();
     store.commit('toggleSearchShow');
-    const genres = ref([]);
+    const genreData = reactive({ genres: [] });
     axios({
       method: 'get',
       url: 'https://api.sally-handmade.com/music/v1/music-type',
     }).then((res) => {
-      genres.value = res.data.data;
+      genreData.genres = res.data.data;
     }).catch((error) => {
       console.log(error);
     });
     onBeforeUnmount(() => {
       store.commit('toggleSearchShow');
     });
+    const { genres } = toRefs(genreData);
     return {
       genres,
     };

@@ -5,7 +5,7 @@
         <div class="relative" v-show="showSearch">
           <i class="fas fa-search absolute top-2 left-3"></i>
           <input type="search" class="pl-9 pr-3 py-1 rounded-full outline-none"
-            placeholder="歌曲或歌手">
+            placeholder="歌曲或歌手" v-model="query" @keyup.enter="search(query)">
         </div>
       </div>
       <div>
@@ -31,6 +31,7 @@ export default {
   setup(props) {
     const store = useStore();
     const isLogin = ref(props.isLogin);
+    const query = ref('');
     const showSearch = computed(() => store.state.showSearch);
     const logout = async () => {
       await axios({
@@ -47,9 +48,12 @@ export default {
         console.log('error');
       });
     };
+    const search = (q) => {
+      console.log(q);
+    };
     return {
       // eslint-disable-next-line vue/no-dupe-keys
-      showSearch, isLogin, logout,
+      showSearch, isLogin, logout, query, search,
     };
   },
 };

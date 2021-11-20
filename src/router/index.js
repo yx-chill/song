@@ -13,6 +13,7 @@ const SongList = () => import('@/views/back/SongList.vue');
 const AddSong = () => import('@/views/back/AddSong.vue');
 const GenreList = () => import('@/views/back/GenreList.vue');
 const Genre = () => import('@/views/Genre.vue');
+const NotFound = () => import('@/views/NotFound.vue');
 
 const routes = [
   {
@@ -48,6 +49,11 @@ const routes = [
         path: 'search',
         name: 'search',
         component: Search,
+      },
+      {
+        path: 'search/:query',
+        name: 'notfound',
+        component: NotFound,
       },
       {
         path: 'genre/:genre',

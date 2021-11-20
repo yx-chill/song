@@ -1,6 +1,5 @@
 <template>
   <div class="about">
-    <Modal />
     <h1>This is an about page</h1>
     <div id="box" ref="box" class="relative overflow-hidden"
       @mouseenter.prevent.stop="hoverDir"
@@ -13,12 +12,10 @@
 
 <script>
 import { ref } from 'vue';
-import Modal from '@/components/Modal.vue';
 
 export default {
   name: 'About',
   components: {
-    Modal,
   },
   setup() {
     const bg = ref(null);

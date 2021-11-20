@@ -1,10 +1,10 @@
 <template>
   <section class="song p-5 w-full h-full flex">
-    <div class="w-1/2 bg-yellow-400 bg-opacity-30 relative">
+    <div class="w-full  xl:w-1/2 bg-yellow-400 bg-opacity-50 relative">
       <button class="bg-gray-900 rounded-full w-12 h-12 flex justify-center items-center
         absolute top-3 right-3">
-            <i class="far fa-heart text-2xl text-red-600"
-              :class="like ? 'fa' : 'far'" @click="favorite"></i>
+        <i class="far fa-heart text-2xl text-red-600"
+          :class="like ? 'fa' : 'far'" @click="favorite"></i>
       </button>
       <div class="record w-60 h-60 relative mb-10"
         :style="{ 'animation-play-state': play ? 'running' : 'paused' }">

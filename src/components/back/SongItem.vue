@@ -100,15 +100,11 @@ export default {
     const song = toRef(props, 'song');
     const i = toRef(props, 'i');
     const genres = toRef(props, 'genres');
-    try {
-      genres.value.forEach((item) => {
-        if (item.id === +song.value.music_type_id) {
-          song.value.genre = item.name;
-        }
-      });
-    } catch (err) {
-      console.log(err);
-    }
+    genres.value.forEach((item) => {
+      if (item.id === +song.value.music_type_id) {
+        song.value.genre = item.name;
+      }
+    });
     const showEditForm = ref(false);
     const enabled = ref(song.value.status);
     const hideEditForm = () => {
