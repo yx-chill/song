@@ -1,10 +1,12 @@
 <template>
-  <div>404</div>
-  {{ query }}
+  <div class="p-3">
+    <div class="text-green-500 text-9xl font-bold">404</div>
+    <div class="font-bold text-2xl text-white">{{ query }}</div>
+  </div>
 </template>
 
 <script>
-import { onBeforeUnmount } from 'vue';
+import { onBeforeUnmount, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 
@@ -13,7 +15,7 @@ export default {
   setup() {
     const route = useRoute();
     const store = useStore();
-    const { query } = route.params;
+    const query = computed(() => route.params.query);
     store.commit('toggleSearchShow');
     onBeforeUnmount(() => {
       store.commit('toggleSearchShow');

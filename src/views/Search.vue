@@ -5,7 +5,7 @@
       <li v-for="genre in genres" :key="genre.id"
         class="w-full aspect-w-1 aspect-h-1 rounded-md overflow-hidden"
         :style="{ 'background-color': genre.color }">
-        <router-link :to="{ name: 'genre', params: { genre: genre.name } }"
+        <router-link :to="{ name: 'genre', params: { genreId: genre.id } }"
           class="genre p-2">
           <h3 class="text-2xl font-bold rounded">{{ genre.name }}</h3>
           <img :src="`https://picsum.photos/80/80?random=${genre.id}`" alt="genre photo"

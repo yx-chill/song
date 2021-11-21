@@ -44,14 +44,15 @@ export default {
   setup() {
     const store = useStore();
     const route = useRoute();
-    const { id } = route.params;
+    console.log(route.params.query);
+    const { songId } = route.params;
     const like = ref(false);
     const favorite = async () => {
       like.value = !like.value;
       if (like.value) {
         await axios({
           method: 'get',
-          url: `https://api.sally-handmade.com/music/v1/music/${id}/like`,
+          url: `https://api.sally-handmade.com/music/v1/music/${songId}/like`,
           headers: { Authorization: `Bearer ${storage.get('userToken')}` },
         }).then((res) => {
           console.log(res);
@@ -62,7 +63,7 @@ export default {
       } else {
         await axios({
           method: 'get',
-          url: `https://api.sally-handmade.com/music/v1/music/${id}/unlike`,
+          url: `https://api.sally-handmade.com/music/v1/music/${songId}/unlike`,
           headers: { Authorization: `Bearer ${storage.get('userToken')}` },
         }).then((res) => {
           console.log(res);
@@ -78,7 +79,7 @@ export default {
     const getSongData = async () => {
       await axios({
         method: 'get',
-        url: `https://api.sally-handmade.com/music/v1/music/${id}`,
+        url: `https://api.sally-handmade.com/music/v1/music/${songId}`,
       }).then((res) => {
         song = res.data.data;
         data.song = res.data.data;
@@ -91,7 +92,7 @@ export default {
       store.dispatch('newSong', song);
     };
     return {
-      id, play, song, data, newSong, like, favorite,
+      songId, play, song, data, newSong, like, favorite,
     };
   },
 };

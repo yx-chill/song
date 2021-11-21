@@ -5,7 +5,7 @@
         <div class="relative" v-show="showSearch">
           <i class="fas fa-search absolute top-2 left-3"></i>
           <input type="search" class="pl-9 pr-3 py-1 rounded-full outline-none"
-            placeholder="歌曲或歌手" v-model="query" @keyup.enter="search(query)">
+            placeholder="歌曲或歌手" v-model="queryStr" @keyup.enter="search(queryStr)">
         </div>
       </div>
       <div>
@@ -22,6 +22,7 @@
 <script>
 import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 import axios from 'axios';
 import storage from '@/models/storage';
 
@@ -30,8 +31,9 @@ export default {
   props: ['isLogin', 'title'],
   setup(props) {
     const store = useStore();
+    const router = useRouter();
     const isLogin = ref(props.isLogin);
-    const query = ref('');
+    const queryStr = ref('');
     const showSearch = computed(() => store.state.showSearch);
     const logout = async () => {
       await axios({
@@ -48,12 +50,13 @@ export default {
         console.log('error');
       });
     };
-    const search = (q) => {
-      console.log(q);
+    const search = (query) => {
+      console.log(query);
+      router.push({ name: 'notfound', params: { query } });
     };
     return {
       // eslint-disable-next-line vue/no-dupe-keys
-      showSearch, isLogin, logout, query, search,
+      showSearch, isLogin, logout, queryStr, search,
     };
   },
 };

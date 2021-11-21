@@ -36,7 +36,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
       },
       {
-        path: 'song/:id',
+        path: 'song/:songId',
         name: 'song',
         component: Song,
       },
@@ -56,7 +56,7 @@ const routes = [
         component: NotFound,
       },
       {
-        path: 'genre/:genre',
+        path: 'genre/:genreId',
         name: 'genre',
         component: Genre,
       },
