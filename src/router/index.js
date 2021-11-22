@@ -13,7 +13,7 @@ const SongList = () => import('@/views/back/SongList.vue');
 const AddSong = () => import('@/views/back/AddSong.vue');
 const GenreList = () => import('@/views/back/GenreList.vue');
 const Genre = () => import('@/views/Genre.vue');
-const NotFound = () => import('@/views/NotFound.vue');
+const Query = () => import('@/views/Query.vue');
 
 const routes = [
   {
@@ -52,8 +52,8 @@ const routes = [
       },
       {
         path: 'search/:query',
-        name: 'notfound',
-        component: NotFound,
+        name: 'query',
+        component: Query,
       },
       {
         path: 'genre/:genreId',

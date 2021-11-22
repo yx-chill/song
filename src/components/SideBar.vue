@@ -2,7 +2,7 @@
   <nav class="side-bar bg-gray-900 h-full px-2 py-4 text-gray-300">
     <div class="logo h-12 text-white text-2xl font-black text-center">
       <i class="fas fa-music"></i>
-      LOGO</div>
+      Music</div>
     <div class="text-black text-lg p-3 bg-yellow-500 rounded-md mb-2"
       v-if="isLogin">
       <i class="fas fa-address-card mr-3"></i>{{ username }}

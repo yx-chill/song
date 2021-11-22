@@ -35,7 +35,7 @@
 <script>
 import { computed, ref, reactive } from 'vue';
 import { useStore } from 'vuex';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import storage from '@/models/storage';
 
@@ -44,7 +44,7 @@ export default {
   setup() {
     const store = useStore();
     const route = useRoute();
-    console.log(route.params.query);
+    const router = useRouter();
     const { songId } = route.params;
     const like = ref(false);
     const favorite = async () => {
@@ -84,7 +84,9 @@ export default {
         song = res.data.data;
         data.song = res.data.data;
       }).catch((error) => {
-        console.log(error);
+        if (error.response.status === 404) {
+          router.push({ name: 'home' });
+        }
       });
     };
     getSongData();

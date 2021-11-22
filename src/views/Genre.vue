@@ -1,7 +1,6 @@
 <template>
   <div class="p-5 text-gray-300">
     <h2 class="text-2xl font-bold" v-if="!songs.length">暫無此分類歌曲...</h2>
-    {{ genreId }}
     <ul class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-5">
       <li v-for="song in songs" :key="song.id">
         <router-link :to="{ name: 'song', params: { songId: song.id } }"
@@ -21,33 +20,31 @@
 import { reactive, toRefs } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
+// 取得該曲風音樂
+const handleGetGenreSongs = () => {
+  const route = useRoute();
+  const { genreId } = route.params;
+  const data = reactive({ songs: [] });
+  const getGenreSongs = async () => {
+    await axios({
+      method: 'get',
+      url: `https://api.sally-handmade.com/music/v1/music?type=${genreId}`,
+    }).then((res) => {
+      data.songs = res.data.data;
+    }).catch((error) => {
+      console.log(error);
+    });
+  };
+  const { songs } = toRefs(data);
+  return { getGenreSongs, songs };
+};
 
 export default {
   name: 'Genre',
   setup() {
-    const route = useRoute();
-    const { genreId } = route.params;
-    const data = reactive({ songs: [] });
-    const getGenreSongs = async () => {
-      await axios({
-        method: 'get',
-        url: `https://api.sally-handmade.com/music/v1/music?type=${genreId}`,
-      }).then((res) => {
-        console.log(res.data.data);
-        data.songs = res.data.data;
-      }).catch((error) => {
-        console.log(error);
-      });
-    };
+    const { getGenreSongs, songs } = handleGetGenreSongs();
     getGenreSongs();
-    const { songs } = toRefs(data);
-    console.log(songs);
-    return {
-      genreId, songs,
-    };
+    return { songs };
   },
 };
 </script>
-
-<style>
-</style>

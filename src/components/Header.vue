@@ -8,13 +8,17 @@
             placeholder="歌曲或歌手" v-model="queryStr" @keyup.enter="search(queryStr)">
         </div>
       </div>
-      <div>
+      <div v-if="!isLogin">
+        <router-link class="text-purple-100 font-bold text-sm hover:underline mr-5"
+        :to="{ name: 'register' }">註冊</router-link>
         <router-link class="text-purple-200 font-bold text-sm px-3 py-2
-          rounded-sm border border-purple-200"
-        :to="{ name: 'login' }" v-if="!isLogin">登入</router-link>
-        <button type="button" class="text-purple-200 font-bold text-sm px-3 py-2
-          rounded-sm border border-purple-200" v-else @click="logout">登出</button>
+          rounded-sm border border-purple-200 hover:bg-purple-200 hover:text-gray-800
+          transition duration-300"
+        :to="{ name: 'login' }">登入</router-link>
       </div>
+      <button type="button" class="text-purple-200 font-bold text-sm px-3 py-2
+        rounded-sm border border-purple-200 hover:bg-purple-200 hover:text-gray-800
+          transition duration-300" v-else @click="logout">登出</button>
     </div>
   </header>
 </template>
@@ -47,12 +51,13 @@ export default {
         window.location.reload();
       }).catch((err) => {
         console.log(err);
-        console.log('error');
       });
     };
     const search = (query) => {
-      console.log(query);
-      router.push({ name: 'notfound', params: { query } });
+      if (!query) {
+        return;
+      }
+      router.push({ name: 'query', params: { query } });
     };
     return {
       // eslint-disable-next-line vue/no-dupe-keys
