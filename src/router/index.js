@@ -14,6 +14,7 @@ const AddSong = () => import('@/views/back/AddSong.vue');
 const GenreList = () => import('@/views/back/GenreList.vue');
 const Genre = () => import('@/views/Genre.vue');
 const Query = () => import('@/views/Query.vue');
+const NotFount = () => import('@/views/NotFound.vue');
 
 const routes = [
   {
@@ -59,6 +60,11 @@ const routes = [
         path: 'genre/:genreId',
         name: 'genre',
         component: Genre,
+      },
+      {
+        path: '404',
+        name: 'notfound',
+        component: NotFount,
       },
     ],
   },

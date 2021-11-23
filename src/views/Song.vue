@@ -33,18 +33,60 @@
 </template>
 
 <script>
-import { computed, ref, reactive } from 'vue';
+import {
+  computed, ref, reactive, toRefs,
+} from 'vue';
 import { useStore } from 'vuex';
 import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import storage from '@/models/storage';
+// 取得收藏列表
+const handleFavoriteSong = () => {
+  const favoriteList = reactive({ songs: [] });
+  const getFaoriteSong = (async () => {
+    await axios({
+      method: 'get',
+      url: 'https://api.sally-handmade.com/music/v1/music/like',
+      headers: { Authorization: `Bearer ${storage.get('userToken')}` },
+    }).then((res) => {
+      favoriteList.songs = res.data.data;
+    }).catch((err) => {
+      console.log(err);
+    });
+  });
+  return { getFaoriteSong, favoriteList };
+};
+// 取得音樂資訊
+const handleGetSongData = (songId) => {
+  const router = useRouter();
+  const data = reactive({ song: [] });
+  const song = { value: [] };
+  const getSongData = async () => {
+    await axios({
+      method: 'get',
+      url: `https://api.sally-handmade.com/music/v1/music/${songId}`,
+    }).then((res) => {
+      song.value = res.data.data;
+      console.log(song);
+      data.song = res.data.data;
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push({ name: 'notfound' });
+      }
+    });
+  };
+  return { data, song, getSongData };
+};
 
 export default {
   name: 'Song',
   setup() {
+    const { getFaoriteSong, favoriteList } = handleFavoriteSong();
+    getFaoriteSong();
+    const { songs } = toRefs(favoriteList);
+    console.log(songs.value);
     const store = useStore();
     const route = useRoute();
-    const router = useRouter();
     const { songId } = route.params;
     const like = ref(false);
     const favorite = async () => {
@@ -74,24 +116,10 @@ export default {
       }
     };
     const play = computed(() => store.getters.playing);
-    const data = reactive({ song: [] });
-    let song = {};
-    const getSongData = async () => {
-      await axios({
-        method: 'get',
-        url: `https://api.sally-handmade.com/music/v1/music/${songId}`,
-      }).then((res) => {
-        song = res.data.data;
-        data.song = res.data.data;
-      }).catch((error) => {
-        if (error.response.status === 404) {
-          router.push({ name: 'home' });
-        }
-      });
-    };
+    const { data, song, getSongData } = handleGetSongData(songId);
     getSongData();
     const newSong = () => {
-      store.dispatch('newSong', song);
+      store.dispatch('newSong', song.value);
     };
     return {
       songId, play, song, data, newSong, like, favorite,
