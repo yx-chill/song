@@ -26,8 +26,8 @@
         <i class="fas fa-forward"></i>
         </button>
       </div>
-      <div class="flex justify-center items-center">
-        <span>{{ seek }}</span>
+      <div class="flex justify-between items-center">
+        <span class="w-16">{{ seek }}</span>
           <div class="w-full mx-3">
             <span class="block h-1 w-full bg-gray-400 rounded cursor-pointer relative"
               @click.prevent="updateSeek($event)">
@@ -38,7 +38,7 @@
                 :style="{ width: playerProgress }"></span>
             </span>
           </div>
-        <span>{{ duration }}</span>
+        <span class="w-16">{{ duration }}</span>
       </div>
     </div>
     <div class="w-30"></div>

@@ -42,15 +42,16 @@ const handleFavoriteSong = () => {
       console.log(err);
     });
   });
-  return { getFaoriteSong, favoriteList };
+  const { songs } = toRefs(favoriteList);
+  console.log(songs);
+  return { getFaoriteSong, songs };
 };
 
 export default {
   name: 'Favorite',
   setup() {
-    const { getFaoriteSong, favoriteList } = handleFavoriteSong();
+    const { getFaoriteSong, songs } = handleFavoriteSong();
     getFaoriteSong();
-    const { songs } = toRefs(favoriteList);
     return {
       songs,
     };

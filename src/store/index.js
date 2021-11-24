@@ -5,6 +5,7 @@ import helper from '../includes/helper';
 export default createStore({
   state: {
     showSearch: false,
+    defaultQuery: '',
     currentSong: {},
     sound: {},
     seek: '00:00',
@@ -14,6 +15,9 @@ export default createStore({
   mutations: {
     toggleSearchShow(state) {
       state.showSearch = !state.showSearch;
+    },
+    getDefaultQuery(state, query) {
+      state.defaultQuery = query;
     },
     newSong(state, payload) {
       state.currentSong = payload;

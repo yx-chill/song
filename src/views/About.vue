@@ -8,6 +8,9 @@
         bg-gray-500 bg-opacity-40 p-5 -top-full" ref="bg">123</div>
     </div>
   </div>
+  <input type="button" value="嗨起来" @click="bejin">
+  <input type="button" value="停下" @click="stop">
+  <h4>{{msg}}</h4>
 </template>
 
 <script>
@@ -18,6 +21,23 @@ export default {
   components: {
   },
   setup() {
+    const msg = ref('嗨起来，跑馬燈~~');
+    let intervalId = null;
+    const bejin = () => {
+      console.log('12');
+      if (intervalId != null) {
+        return;
+      }
+      intervalId = setInterval(() => {
+        const start = msg.value.substring(0, 1);
+        const end = msg.value.substring(1);
+        msg.value = end + start;
+      }, 500);
+    };
+    const stop = () => {
+      clearInterval(intervalId);
+      intervalId = null;
+    };
     const bg = ref(null);
     const box = ref(null);
     const hoverDir = (e) => {
@@ -83,8 +103,9 @@ export default {
         }
       }
     };
+
     return {
-      box, bg, hoverDir,
+      box, bg, hoverDir, msg, bejin, stop,
     };
   },
 };

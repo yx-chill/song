@@ -1,6 +1,9 @@
 <template>
-  <div class="p-3">
-    <div class="font-bold text-2xl text-white">{{ query }}</div>
+  <div class="p-5">
+    <div class="font-bold text-2xl text-white mb-3">
+      <p v-if="result.length">有關 "{{ query }}" 的搜尋結果</p>
+      <p v-else>很抱歉，沒有 "{{ query }}" 的搜尋結果</p>
+      </div>
     <ul class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-5">
       <li v-for="song in result" :key="song.id">
         <router-link :to="{ name: 'song', params: { songId: song.id } }"
@@ -18,17 +21,19 @@
 
 <script>
 import {
-  onBeforeUnmount, computed, reactive, toRefs, onBeforeMount,
+  computed,
+  onBeforeUnmount, reactive, toRefs, watchEffect,
 } from 'vue';
-import { onBeforeRouteUpdate, useRoute } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 import axios from 'axios';
 // 查詢結果
-const handleGetResult = () => {
+const handleGetResult = (store) => {
   const route = useRoute();
   const query = computed(() => route.params.query);
   const data = reactive({ result: [] });
   const getResult = async () => {
+    store.commit('getDefaultQuery', query.value);
     await axios({
       method: 'get',
       url: `https://api.sally-handmade.com/music/v1/music?search=${query.value}`,
@@ -40,8 +45,10 @@ const handleGetResult = () => {
       console.log(error);
     });
   };
+  // 監聽查詢參數，有改變會自動執行
+  watchEffect(() => getResult());
   const { result } = toRefs(data);
-  return { getResult, query, result };
+  return { query, result };
 };
 
 export default {
@@ -49,15 +56,10 @@ export default {
   setup() {
     const store = useStore();
     store.commit('toggleSearchShow');
-    const { result, getResult, query } = handleGetResult();
-    onBeforeMount(() => {
-      getResult();
-    });
-    onBeforeRouteUpdate(() => {
-      getResult();
-    });
+    const { result, query } = handleGetResult(store);
     onBeforeUnmount(() => {
       store.commit('toggleSearchShow');
+      store.commit('getDefaultQuery', '');
     });
     return { query, result };
   },
