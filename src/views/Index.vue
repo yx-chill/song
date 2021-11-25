@@ -1,7 +1,8 @@
 <template>
   <main class="main flex">
-    <SideBar :isLogin="isLogin" :username="username" />
-    <section class="w-full flex flex-col">
+    <SideBar :isLogin="isLogin" :username="username" @toLogin="toLogin" />
+    <section class="w-full flex flex-col relative">
+      <Toast v-if="toastData.showToast" :message="toastData.toastMsg" />
       <Header :isLogin="isLogin" />
       <div class="bg-gray-700 flex-grow overflow-auto">
         <router-view />
@@ -18,11 +19,14 @@ import storage from '@/models/storage';
 import Header from '@/components/Header.vue';
 import SideBar from '@/components/SideBar.vue';
 import Player from '@/components/Player.vue';
+import Toast, { useToast } from '@/components/Toast.vue';
+
+const { toastData, showToast } = useToast();
 
 export default {
   name: 'Index',
   components: {
-    Header, SideBar, Player,
+    Header, SideBar, Player, Toast,
   },
   setup() {
     const isLogin = ref(storage.get('userToken'));
@@ -40,8 +44,11 @@ export default {
         });
       }
     });
+    const toLogin = () => {
+      showToast('請先登入');
+    };
     return {
-      isLogin, username,
+      isLogin, username, toastData, toLogin,
     };
   },
 };

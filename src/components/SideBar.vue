@@ -24,26 +24,34 @@
       </li>
     </ul>
     <ul>
-      <li class="px-3 py-1 hover:bg-gray-500 rounded-md cursor-pointer">
-        <router-link :to="{ name: 'favorite' }">
-        <i class="far fa-heart text-xl mr-3"></i>收藏的歌曲
-        </router-link></li>
+      <li class="px-3 py-1 hover:bg-gray-500 rounded-md cursor-pointer" @click="toLogin">
+        <i class="far fa-heart text-xl mr-3"></i>收藏的歌曲</li>
     </ul>
   </nav>
 </template>
 
 <script>
 import { toRef } from 'vue';
+import { useRouter } from 'vue-router';
 
 export default {
   name: 'SideBar',
   props: ['isLogin', 'username'],
-  setup(props) {
+  emits: ['toLogin'],
+  setup(props, { emit }) {
+    const router = useRouter();
     const isLogin = toRef(props, 'isLogin');
     const username = toRef(props, 'username');
+    const toLogin = () => {
+      if (!isLogin.value) {
+        emit('toLogin');
+      } else {
+        router.push({ name: 'favorite' });
+      }
+    };
     return {
       // eslint-disable-next-line vue/no-dupe-keys
-      isLogin, username,
+      isLogin, username, toLogin,
     };
   },
 };

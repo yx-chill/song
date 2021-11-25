@@ -1,5 +1,5 @@
 <template>
-  <header class="h-14 px-10 py-2 bg-gray-800 w-full">
+  <header class="px-10 py-2 bg-gray-800 w-full">
     <div class="container flex justify-between items-center m-auto">
       <div class="h-8">
         <div class="relative" v-show="showSearch">
