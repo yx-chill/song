@@ -42,8 +42,7 @@
 
 <script>
 import { reactive, toRefs } from 'vue';
-import axios from 'axios';
-import storage from '@/models/storage';
+import { get, post } from '@/includes/adminReq';
 import UploadSong from '@/components/back/UploadSong.vue';
 import UploadImg from '@/components/back/UploadImg.vue';
 import Loading, { useLoading } from '@/components/Loading.vue';
@@ -53,11 +52,7 @@ const { loadingData, showLoading, hideLoading } = useLoading();
 const handleGenres = () => {
   const genreData = reactive({ genres: [] });
   const getGenres = async () => {
-    await axios({
-      method: 'get',
-      url: 'https://api.sally-handmade.com/music/v1/admin/music-type',
-      headers: { Authorization: `Bearer ${storage.get('adminToken')}` },
-    }).then((res) => {
+    await get('v1/admin/music-type').then((res) => {
       genreData.genres = res.data.data;
     }).catch((error) => {
       console.log(error);
@@ -92,14 +87,10 @@ const handleAddSong = (songData) => {
     if (e.image) {
       data.append('image', e.image[0]);
     }
-    await axios({
-      method: 'post',
-      url: 'https://api.sally-handmade.com/music/v1/admin/music',
+    await post('v1/admin/music', data, {
       headers: {
-        Authorization: `Bearer ${storage.get('adminToken')}`,
         'Content-Type': 'multipart/form-data',
       },
-      data,
     }).then((res) => {
       console.log(res);
     }).catch((err) => {
@@ -133,6 +124,3 @@ export default {
   },
 };
 </script>
-
-<style>
-</style>

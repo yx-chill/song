@@ -12,7 +12,7 @@
         :class="genre.status ? 'bg-green-600' : 'bg-red-600'"></span></div>
     <div class="flex">
       <button class="py-1 px-2 rounded text-white bg-green-600 m-auto"
-        @click.prevent="editForm = true">
+        @click.prevent="editForm = !editForm">
         <i class="fa fa-pencil-alt"></i>
       </button>
     </div>
@@ -66,6 +66,7 @@
 <script>
 import { ref, toRef } from 'vue';
 import { Switch } from '@headlessui/vue';
+import { useConfirm } from '@/composables/useConfirmModal';
 
 // 更新曲風
 const handleEditForm = (genre, emit) => {
@@ -82,6 +83,12 @@ const handleEditForm = (genre, emit) => {
     data.append('status', statusCode);
     data.append('_method', 'put');
     emit('editGenre', id, data);
+    // eslint-disable-next-line no-param-reassign
+    genre.value.name = e.name;
+    // eslint-disable-next-line no-param-reassign
+    genre.value.color = e.color;
+    // eslint-disable-next-line no-param-reassign
+    genre.value.status = enabled.value;
     editForm.value = false;
   };
   return { editForm, enabled, editGenre };
@@ -97,7 +104,11 @@ export default {
     const i = toRef(props, 'i');
     const { editForm, enabled, editGenre } = handleEditForm(genre, emit);
     const deleteGenre = (id) => {
-      emit('deleteGenre', id);
+      useConfirm().then((result) => {
+        if (result) {
+          emit('deleteGenre', id);
+        }
+      });
     };
     return {
       // eslint-disable-next-line vue/no-dupe-keys

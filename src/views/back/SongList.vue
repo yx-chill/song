@@ -21,21 +21,17 @@
 
 <script>
 import { reactive, toRefs } from 'vue';
-import axios from 'axios';
-import storage from '@/models/storage';
+import { get, post, del } from '@/includes/adminReq';
 import SongItem from '@/components/back/SongItem.vue';
 import Loading, { useLoading } from '@/components/Loading.vue';
+import { successNotify, errorNotify } from '@/composables/useNotification';
 
 const { loadingData, showLoading, hideLoading } = useLoading();
 // 取得音樂
 const handleSongs = () => {
   const songList = reactive({ songs: [] });
   const getSongs = (async () => {
-    await axios({
-      method: 'get',
-      url: 'https://api.sally-handmade.com/music/v1/admin/music',
-      headers: { Authorization: `Bearer ${storage.get('adminToken')}` },
-    }).then((res) => {
+    await get('v1/admin/music').then((res) => {
       songList.songs = res.data.data;
     }).catch((error) => {
       console.log(error);
@@ -47,11 +43,7 @@ const handleSongs = () => {
 const handleGenres = () => {
   const genreList = reactive({ genres: [] });
   const getGenres = (async () => {
-    await axios({
-      method: 'get',
-      url: 'https://api.sally-handmade.com/music/v1/admin/music-type',
-      headers: { Authorization: `Bearer ${storage.get('adminToken')}` },
-    }).then((res) => {
+    await get('v1/admin/music-type').then((res) => {
       genreList.genres = res.data.data;
     }).catch((error) => {
       console.log(error);
@@ -64,16 +56,12 @@ const handleGenres = () => {
 const handleEditSong = () => {
   const editSong = async (id, data) => {
     showLoading('歌曲更新中...');
-    await axios({
-      method: 'post',
-      url: `https://api.sally-handmade.com/music/v1/admin/music/${id}`,
+    await post(`v1/admin/music/${id}`, data, {
       headers: {
-        Authorization: `Bearer ${storage.get('adminToken')}`,
         'Content-Type': 'multipart/form-data',
       },
-      data,
-    }).then((res) => {
-      console.log(res);
+    }).then(() => {
+      successNotify('編輯成功');
     }).catch((err) => {
       console.log(err.response);
     });
@@ -85,19 +73,14 @@ const handleEditSong = () => {
 const handleDeleteSong = (songList) => {
   const deleteSong = async (id) => {
     showLoading('歌曲刪除中...');
-    await axios({
-      method: 'delete',
-      url: `https://api.sally-handmade.com/music/v1/admin/music/${id}`,
-      headers: { Authorization: `Bearer ${storage.get('adminToken')}` },
-    }).then((res) => {
-      console.log(res);
+    await del(`v1/admin/music/${id}`).then(() => {
       songList.songs.forEach((item, index) => {
         if (item.id === id) {
           songList.songs.splice(index, 1);
         }
       });
     }).catch((err) => {
-      console.log(err);
+      errorNotify('無法刪除', err.response.data.message);
     });
     hideLoading();
   };
@@ -117,6 +100,7 @@ export default {
     getSongs();
     getGenres();
     const { songs } = toRefs(songList);
+
     return {
       loadingData, songs, genres, editSong, deleteSong,
     };

@@ -26,8 +26,8 @@
       </VeeForm>
       <div class="pt-2 border-gray-400 border-t-2 text-center">
         <p class="font-bold mb-3">未註冊帳戶?</p>
-        <router-link class="block w-full rounded-full border-2 py-1.5 font-bold"
-        :to="{ name: 'register' }">
+        <router-link class="block w-full rounded-full border-2 py-1.5 font-bold
+          hover:bg-purple-200" :to="{ name: 'register' }">
           建立新帳號
         </router-link>
       </div>
@@ -78,8 +78,8 @@ const handleLogin = () => {
         url: 'https://api.sally-handmade.com/music/v1/login',
         data,
       }).then(async (res) => {
-        storage.set('userToken', res.data.access_token);
-        storage.set('userRefreshToken', res.data.refresh_token);
+        await storage.set('userToken', res.data.access_token);
+        await storage.set('userRefreshToken', res.data.refresh_token);
         router.push({ name: 'home' });
       }).catch((err) => {
         console.log(err.response.status);

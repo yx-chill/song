@@ -29,6 +29,7 @@ import { useRouter } from 'vue-router';
 import axios from 'axios';
 import storage from '@/models/storage';
 import Loading, { useLoading } from '@/components/Loading.vue';
+import { successNotify } from '@/composables/useNotification';
 
 const { loadingData, showLoading, hideLoading } = useLoading();
 // 後台登入
@@ -49,7 +50,7 @@ const handleAdminLogin = () => {
       }).then((res) => {
         storage.set('adminToken', res.data.access_token);
         storage.set('adminRefresh', res.data.refresh_token);
-        router.push({ name: 'manage' });
+        router.push({ name: 'manage' }).then(() => successNotify('登入成功'));
       }).catch((err) => {
         console.log(err.response);
         password.value = '';

@@ -36,8 +36,8 @@
       </VeeForm>
       <div class="pt-2 border-gray-400 border-t-2 text-center">
         <p class="font-bold mb-3">已有帳戶?</p>
-        <router-link class="block w-full rounded-full border-2 py-1.5 font-bold"
-          :to="{ name: 'login' }">
+        <router-link class="block w-full rounded-full border-2 py-1.5 font-bold
+          hover:bg-purple-200" :to="{ name: 'login' }">
           登入
         </router-link>
       </div>

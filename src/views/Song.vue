@@ -38,6 +38,8 @@ import { useStore } from 'vuex';
 import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import storage from '@/models/storage';
+// import { successNotify } from '@/composables/useNotification';
+
 // 取得收藏列表
 const handleFavoriteSong = (songId) => {
   const favoriteList = { songs: [] };

@@ -1,6 +1,6 @@
 <template>
   <div class="grid grid-cols-10 gap-4 hover:bg-yellow-400 hover:text-gray-500 h-14"
-    :class="{ 'bg-blue-300': i % 2 === 0, 'bg-blue-400': i % 2 === 1 }">
+    :class="i % 2 === 0 ? 'bg-blue-300' : 'bg-blue-400'">
     <div class="flex">
       <div class="w-11 h-11 m-auto">
         <img :src="song.image ? song.image : 'http://www.davidguo.idv.tw/cube/images/SQ-1/SQ2.png'" alt="song photo"
@@ -16,13 +16,14 @@
     </div>
     <div class="flex">
       <button class="py-1 px-2 rounded text-white bg-green-600 m-auto"
-        @click.prevent="showEditForm = true">
+        @click.prevent="showEditForm = !showEditForm">
         <i class="fa fa-pencil-alt"></i>
       </button>
     </div>
     <div class="flex">
       <button class="py-1 px-2 rounded text-white bg-red-600 m-auto"
         @click.prevent="deleteSong(song.id)">
+        <!-- deleteSong(song.id) -->
         <i class="fa fa-times"></i>
       </button>
     </div>
@@ -76,7 +77,7 @@
       </div>
       <div class="text-center w-1/10">
         <button type="button" class="px-5 py-3 text-white font-bold rounded-lg
-          bg-red-500 hover:bg-red-600" @click.prevent="hideEditForm">取消</button>
+          bg-red-500 hover:bg-red-600" @click.prevent="showEditForm = false">取消</button>
       </div>
     </VeeForm>
   </div>
@@ -85,6 +86,7 @@
 <script>
 import { ref, toRef, reactive } from 'vue';
 import { Switch } from '@headlessui/vue';
+import { useConfirm } from '@/composables/useConfirmModal';
 
 const songSchema = reactive({
   name: 'required|min:3|max:20',
@@ -107,9 +109,6 @@ export default {
     });
     const showEditForm = ref(false);
     const enabled = ref(song.value.status);
-    const hideEditForm = () => {
-      showEditForm.value = false;
-    };
     const preview = ref('');
     const previewImage = (e) => {
       const file = e.target.files[0];
@@ -119,6 +118,7 @@ export default {
         preview.value = event.target.result;
       });
     };
+
     const editSong = async (e, id) => {
       let statusCode = 1;
       if (!enabled.value) {
@@ -132,8 +132,7 @@ export default {
       data.append('_method', 'put');
       if (e.image) {
         data.append('image', e.image[0]);
-        // eslint-disable-next-line prefer-destructuring
-        song.value.image = e.image[0];
+        [song.value.image] = e.image;
       }
       emit('editSong', id, data);
       song.value.name = e.name;
@@ -143,7 +142,11 @@ export default {
       showEditForm.value = false;
     };
     const deleteSong = (id) => {
-      emit('deleteSong', id);
+      useConfirm().then((result) => {
+        if (result) {
+          emit('deleteSong', id);
+        }
+      });
     };
     return {
       songSchema,
@@ -157,7 +160,6 @@ export default {
       preview,
       previewImage,
       showEditForm,
-      hideEditForm,
       editSong,
       deleteSong,
     };

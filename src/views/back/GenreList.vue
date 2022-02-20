@@ -38,21 +38,17 @@
 
 <script>
 import { reactive, toRefs } from 'vue';
-import axios from 'axios';
-import storage from '@/models/storage';
+import { post, get, del } from '@/includes/adminReq';
 import GenreItem from '@/components/back/GenreItem.vue';
 import Loading, { useLoading } from '../../components/Loading.vue';
+import { successNotify, errorNotify } from '@/composables/useNotification';
 
 const { loadingData, showLoading, hideLoading } = useLoading();
 // 取得曲風
 const handleGenres = () => {
   const genreData = reactive({ genres: [] });
   const getGenres = async () => {
-    await axios({
-      method: 'get',
-      url: 'https://api.sally-handmade.com/music/v1/admin/music-type',
-      headers: { Authorization: `Bearer ${storage.get('adminToken')}` },
-    }).then((res) => {
+    await get('v1/admin/music-type').then((res) => {
       genreData.genres = res.data.data;
     }).catch((error) => {
       console.log(error);
@@ -64,12 +60,7 @@ const handleGenres = () => {
 const handleAddGenre = (genreData) => {
   const addGenre = async (data) => {
     showLoading('曲風新增中...');
-    await axios({
-      method: 'post',
-      url: 'https://api.sally-handmade.com/music/v1/admin/music-type',
-      headers: { Authorization: `Bearer ${storage.get('adminToken')}` },
-      data,
-    }).then((res) => {
+    await post('v1/admin/music-type', data).then((res) => {
       genreData.genres.push(res.data.data);
     }).catch((err) => {
       console.log(err);
@@ -79,29 +70,11 @@ const handleAddGenre = (genreData) => {
   return addGenre;
 };
 // 更新曲風
-const handleEditGenre = (genreData) => {
+const handleEditGenre = () => {
   const editGenre = async (id, data) => {
     showLoading('曲風更新中...');
-    await axios({
-      method: 'post',
-      url: `https://api.sally-handmade.com/music/v1/admin/music-type/${id}`,
-      headers: { Authorization: `Bearer ${storage.get('adminToken')}` },
-      data,
-    }).then(() => {
-      let status = false;
-      if (data.get('status')) {
-        status = true;
-      }
-      genreData.genres.forEach((item, index) => {
-        if (item.id === id) {
-          // eslint-disable-next-line no-param-reassign
-          genreData.genres[index].name = data.get('name');
-          // eslint-disable-next-line no-param-reassign
-          genreData.genres[index].color = data.get('color');
-          // eslint-disable-next-line no-param-reassign
-          genreData.genres[index].status = status;
-        }
-      });
+    await post(`v1/admin/music-type/${id}`, data).then(() => {
+      successNotify('編輯成功!');
     }).catch((err) => {
       console.log(err);
     });
@@ -113,18 +86,15 @@ const handleEditGenre = (genreData) => {
 const handleDeleteGenre = (genreData) => {
   const deleteGenre = async (id) => {
     showLoading('曲風刪除中...');
-    await axios({
-      method: 'delete',
-      url: `https://api.sally-handmade.com/music/v1/admin/music-type/${id}`,
-      headers: { Authorization: `Bearer ${storage.get('adminToken')}` },
-    }).then(() => {
+    await del(`v1/admin/music-type/${id}`).then(() => {
       genreData.genres.forEach((item, index) => {
         if (item.id === id) {
           genreData.genres.splice(index, 1);
         }
       });
+      successNotify('刪除成功');
     }).catch((err) => {
-      console.log(err);
+      errorNotify('無法刪除', err.response.data.message);
     });
     hideLoading();
   };
@@ -138,7 +108,7 @@ export default {
     const genreSchema = { name: 'required' };
     const { genreData, getGenres } = handleGenres();
     const addGenre = handleAddGenre(genreData);
-    const editGenre = handleEditGenre(genreData);
+    const editGenre = handleEditGenre();
     const deleteGenre = handleDeleteGenre(genreData);
     getGenres();
     const { genres } = toRefs(genreData);

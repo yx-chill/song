@@ -2,7 +2,6 @@
   <main class="main flex">
     <SideBar :isLogin="isLogin" :username="username" @toLogin="toLogin" />
     <section class="w-full flex flex-col relative">
-      <Toast v-if="toastData.showToast" :message="toastData.toastMsg" />
       <Header :isLogin="isLogin" />
       <div class="bg-gray-700 flex-grow overflow-auto">
         <router-view />
@@ -13,42 +12,36 @@
 </template>
 
 <script>
-import { ref, onBeforeMount } from 'vue';
-import axios from 'axios';
+import { ref } from 'vue';
+// import axios from 'axios';
 import storage from '@/models/storage';
 import Header from '@/components/Header.vue';
 import SideBar from '@/components/SideBar.vue';
 import Player from '@/components/Player.vue';
-import Toast, { useToast } from '@/components/Toast.vue';
-
-const { toastData, showToast } = useToast();
+import { warningNotify } from '@/composables/useNotification';
+import request from '@/includes/request';
 
 export default {
   name: 'Index',
   components: {
-    Header, SideBar, Player, Toast,
+    Header, SideBar, Player,
   },
   setup() {
     const isLogin = ref(storage.get('userToken'));
     const username = ref('');
-    onBeforeMount(async () => {
-      if (isLogin.value) {
-        await axios({
-          method: 'get',
-          url: 'https://api.sally-handmade.com/music/v1/user',
-          headers: { Authorization: `Bearer ${storage.get('userToken')}` },
-        }).then((res) => {
-          username.value = res.data.data.name;
-        }).catch((error) => {
-          console.log(error);
-        });
-      }
-    });
+    if (isLogin.value) {
+      request('get', 'v1/user').then((res) => {
+        username.value = res.data.data.name;
+      }).catch((err) => {
+        console.log(err);
+      });
+    }
+
     const toLogin = () => {
-      showToast('請先登入');
+      warningNotify('請先登入');
     };
     return {
-      isLogin, username, toastData, toLogin,
+      isLogin, username, toLogin,
     };
   },
 };

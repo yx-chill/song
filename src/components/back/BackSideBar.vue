@@ -3,10 +3,10 @@
     <div class="bg-black w-full h-full opacity-75 p-3 flex flex-col relative">
       <div class="absolute bottom-0 left-0 p-3 text-center
           rounded hover:bg-opacity-20 hover:bg-white block w-full">
-        <router-link :to="{ name: 'admin' }" class="block w-full" @click="adminLogout">
+        <button type="button" class="block w-full" @click="adminLogout">
           <i class="fas fa-sign-out-alt text-xl mr-4"></i>
           <span class="text hidden">登出</span>
-        </router-link>
+        </button>
       </div>
       <div class="p-3 pb-0">
         <h2 class="text-white text-xl text-center
@@ -38,7 +38,7 @@
           <li class="py-1"><router-link :to="{ name: 'genre-list' }"
             class="block w-full rounded hover:bg-opacity-20 hover:bg-white px-3 py-1">
             <i class="fas fa-bookmark text-xl ml-02 mr-18"></i>
-            <span class="text hidden">曲風</span>
+            <span class="text hidden">曲風管理</span>
             </router-link>
           </li>
         </ul>
@@ -48,14 +48,26 @@
 </template>
 
 <script>
+import { useRouter } from 'vue-router';
+import { get } from '@/includes/adminReq';
 import storage from '@/models/storage';
+import { successNotify } from '@/composables/useNotification';
 
 export default {
   name: 'BackSideBar',
   setup() {
-    const adminLogout = () => {
-      storage.set('adminToken', '');
-      storage.set('adminRefresh', '');
+    const router = useRouter();
+    const adminLogout = async () => {
+      await get('v1/admin/logout').then(() => {
+        storage.remove('adminToken');
+        storage.remove('adminRefresh');
+        router.push({ name: 'admin' }).then(() => successNotify('登出成功'));
+      }).catch((err) => {
+        console.log(err.response);
+        storage.remove('adminToken');
+        storage.remove('adminRefresh');
+        router.push({ name: 'admin' });
+      });
     };
     return {
       adminLogout,

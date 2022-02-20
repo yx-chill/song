@@ -18,7 +18,7 @@
       gap-5 transition duration-500">
       <li v-for="song in songs" :key="song.id" class="transition duration-500">
         <router-link :to="{ name: 'song', params: { songId: song.id } }"
-          class="song block p-4 bg-gray-600 hover:bg-gray-500 rounded">
+          class="block p-4 bg-gray-600 hover:bg-gray-500 rounded transition duration-500">
           <div class="aspect-w-1 aspect-h-1 rounded overflow-hidden mb-4">
             <img :src="song.image || 'http://www.davidguo.idv.tw/cube/images/SQ-1/SQ2.png'" alt="song photo">
           </div>
@@ -34,6 +34,7 @@
 // @ is an alias to /src
 import { reactive, ref, toRefs } from 'vue';
 import axios from 'axios';
+
 // 取得音樂列表
 const handleSongList = () => {
   const songList = reactive({ songs: [] });
@@ -71,15 +72,10 @@ export default {
       const query = '?order=watched';
       getSongList(query);
     };
+
     return {
       songs, currentTag, genaral, hot, watch,
     };
   },
 };
 </script>
-
-<style scoped>
-.song {
-  transition: .5s;
-}
-</style>

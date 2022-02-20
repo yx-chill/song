@@ -9,7 +9,8 @@
       leave-from="opacity-100 scale-100"
       leave-to="opacity-0 scale-95">
       <div class="mt-2">
-        <i class="fa-solid fa-triangle-exclamation text-red-600 text-5xl mb-4"></i>
+        <i class="fas fa-exclamation-triangle text-red-600 text-5xl mb-4"></i>
+        <!-- <i class="fa-solid fa-triangle-exclamation text-red-600 text-5xl mb-4"></i> -->
         <slot name="title">
           <p class="text-xl text-red-600 font-bold">確定要刪除嗎?</p>
         </slot>
@@ -19,12 +20,12 @@
           <button type="button" class="inline-flex justify-center px-4 py-2 text-lg font-bold
             border border-gray-200 rounded-md hover:bg-gray-50 focus:outline-none
             focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
-            @click.prevent="cancel">取消</button>
+            @click.prevent="handleCancel">取消</button>
           <button type="button" class="inline-flex justify-center px-4 py-2 text-lg font-bold
             text-red-900 bg-red-100 border border-gray-200 rounded-md
             hover:bg-red-200 focus:outline-none focus-visible:ring-2 mr-3
             focus-visible:ring-offset-2 focus-visible:ring-blue-500"
-            @click.prevent="deleteData">確定</button>
+            @click.prevent="handleSuccess">確定</button>
         </div>
       </div>
     </div>
@@ -36,22 +37,26 @@
 
 export default {
   name: 'Modal',
+  emits: ['update:modelValue', 'success', 'cancel'],
   props: {
     modelValue: Boolean,
   },
-  emits: ['deleteData', 'cancel', 'update:modelValue'],
   setup(props, { emit }) {
     // const isOpen = ref(false);
-
-    const deleteData = () => {
-      emit('update:modelValue', true);
-      // emit('deleteData');
-    };
-    const cancel = () => {
+    const closeModal = () => {
       emit('update:modelValue', false);
-      // emit('cancel');
     };
-    return { deleteData, cancel };
+
+    const handleSuccess = () => {
+      // emit('update:modelValue', true);
+      emit('success');
+      closeModal();
+    };
+    const handleCancel = () => {
+      emit('cancel');
+      closeModal();
+    };
+    return { handleSuccess, handleCancel };
   },
 };
 </script>
