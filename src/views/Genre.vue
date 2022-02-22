@@ -20,15 +20,13 @@
 <script>
 import { computed, reactive, toRefs } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import axios from 'axios';
+import request from '@/includes/request';
+
 // 檢查是否有該曲風
 const handleGetGenre = (genreId) => {
   const router = useRouter();
   const getGenre = async () => {
-    await axios({
-      method: 'get',
-      url: `https://api.sally-handmade.com/music/v1/music-type/${genreId.value}`,
-    }).then((res) => {
+    await request('get', `v1/music-type/${genreId.value}`).then((res) => {
       console.log(res);
     }).catch((error) => {
       if (error.response.status === 404) {
@@ -42,10 +40,7 @@ const handleGetGenre = (genreId) => {
 const handleGetGenreSongs = (genreId) => {
   const data = reactive({ songs: [] });
   const getGenreSongs = async () => {
-    await axios({
-      method: 'get',
-      url: `https://api.sally-handmade.com/music/v1/music?type=${genreId.value}`,
-    }).then((res) => {
+    await request('get', `v1/music?type=${genreId.value}`).then((res) => {
       data.songs = res.data.data;
       console.log(data.songs);
     }).catch((error) => {

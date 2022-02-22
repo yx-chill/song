@@ -37,19 +37,15 @@ import { computed, ref, reactive } from 'vue';
 import { useStore } from 'vuex';
 import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
+import request from '@/includes/request';
 import storage from '@/models/storage';
-// import { successNotify } from '@/composables/useNotification';
 
 // 取得收藏列表
 const handleFavoriteSong = (songId) => {
   const favoriteList = { songs: [] };
   const status = ref(false);
   const getFaoriteSong = (async () => {
-    await axios({
-      method: 'get',
-      url: 'https://api.sally-handmade.com/music/v1/music/like',
-      headers: { Authorization: `Bearer ${storage.get('userToken')}` },
-    }).then((res) => {
+    await request('get', 'v1/music/like').then((res) => {
       favoriteList.songs = res.data.data;
       favoriteList.songs.forEach((item) => {
         if (item.id === +songId) {
@@ -87,22 +83,14 @@ const handleFavorite = (songId, status) => {
   const isLike = status;
   const favorite = async () => {
     if (!status.value) {
-      await axios({
-        method: 'get',
-        url: `https://api.sally-handmade.com/music/v1/music/${songId}/like`,
-        headers: { Authorization: `Bearer ${storage.get('userToken')}` },
-      }).then((res) => {
+      await request('get', `v1/music/${songId}/like`).then((res) => {
         console.log(res);
         isLike.value = true;
       }).catch((err) => {
         console.log(err);
       });
     } else {
-      await axios({
-        method: 'get',
-        url: `https://api.sally-handmade.com/music/v1/music/${songId}/unlike`,
-        headers: { Authorization: `Bearer ${storage.get('userToken')}` },
-      }).then((res) => {
+      await request('get', `v1/music/${songId}/unlike`).then((res) => {
         console.log(res);
         isLike.value = false;
       }).catch((err) => {
@@ -112,6 +100,7 @@ const handleFavorite = (songId, status) => {
   };
   return { favorite, isLike };
 };
+
 export default {
   name: 'Song',
   setup() {
@@ -123,7 +112,7 @@ export default {
     const { getFaoriteSong, status } = handleFavoriteSong(songId);
     const { favorite, isLike } = handleFavorite(songId, status);
     const { data, song, getSongData } = handleGetSongData(songId);
-    getFaoriteSong();
+    if (isLogin.value) getFaoriteSong();
     getSongData();
     const newSong = () => {
       store.dispatch('newSong', song.value);

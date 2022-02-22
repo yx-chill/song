@@ -9,26 +9,55 @@ const refreshToken = () => axios({
 
 const instance = axios.create({
   baseURL: 'https://api.sally-handmade.com/music/',
-  headers: { Authorization: `Bearer ${storage.get('adminToken')}` },
   timeout: 10000,
 });
+
+instance.interceptors.request.use((config) => {
+  // eslint-disable-next-line no-param-reassign
+  config.headers.Authorization = `Bearer ${storage.get('adminToken')}`;
+  return config;
+},
+(err) => {
+  console.log(err);
+});
+
+let isRefreshing = false;
+let requests = [];
 
 instance.interceptors.response.use(
   (res) => res,
   (err) => {
-    const { config } = err;
     if (!err.response) return Promise.reject(err);
+    const { config } = err;
     if (err.response.status === 401) {
-      return new Promise((resolve) => {
+      if (!isRefreshing) {
+        isRefreshing = true;
         refreshToken().then((res) => {
           storage.set('adminToken', res.data.access_token);
           storage.set('adminRefresh', res.data.refresh_token);
           config.headers.Authorization = `Bearer ${res.data.access_token}`;
-          instance(config).then((response) => resolve(response));
+
+          requests.forEach((item) => item(res.data.access_token));
+          requests = [];
         }).catch(() => {
           alert('因長時間未上線，請重新登入');
+          storage.remove('adminToken');
+          storage.remove('adminRefresh');
+        }).finally(() => {
+          isRefreshing = false;
         });
-      });
+        return new Promise((resolve) => {
+          instance(config).then((response) => resolve(response));
+        });
+      // eslint-disable-next-line no-else-return
+      } else {
+        return new Promise((resolve) => {
+          requests.push((token) => {
+            config.headers.Authorization = `Bearer ${token}`;
+            instance(config).then((res) => resolve(res));
+          });
+        });
+      }
     }
     return Promise.reject(err);
   },

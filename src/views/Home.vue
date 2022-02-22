@@ -33,16 +33,13 @@
 <script>
 // @ is an alias to /src
 import { reactive, ref, toRefs } from 'vue';
-import axios from 'axios';
+import request from '@/includes/request';
 
 // 取得音樂列表
 const handleSongList = () => {
   const songList = reactive({ songs: [] });
   const getSongList = (async (query = '') => {
-    await axios({
-      method: 'get',
-      url: `https://api.sally-handmade.com/music/v1/music${query}`,
-    }).then((res) => {
+    await request('get', `v1/music${query}`).then((res) => {
       songList.songs = res.data.data;
     }).catch((error) => {
       console.log(error);

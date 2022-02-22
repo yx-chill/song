@@ -41,6 +41,7 @@ import { useRouter } from 'vue-router';
 import axios from 'axios';
 import storage from '@/models/storage';
 import Loading, { useLoading } from '@/components/Loading.vue';
+import { successNotify } from '@/composables/useNotification';
 
 const loginSchema = { email: 'required|min:3|max:50|email' };
 const { loadingData, showLoading, hideLoading } = useLoading();
@@ -80,7 +81,7 @@ const handleLogin = () => {
       }).then(async (res) => {
         await storage.set('userToken', res.data.access_token);
         await storage.set('userRefreshToken', res.data.refresh_token);
-        router.push({ name: 'home' });
+        router.push({ name: 'home' }).then(() => successNotify('登入成功'));
       }).catch((err) => {
         console.log(err.response.status);
         console.log('error');

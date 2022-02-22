@@ -20,8 +20,9 @@
 <script>
 import { reactive, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
-import axios from 'axios';
 import storage from '@/models/storage';
+import request from '@/includes/request';
+import { warningNotify } from '@/composables/useNotification';
 
 // 取得收藏列表
 const handleFavoriteSong = () => {
@@ -29,14 +30,10 @@ const handleFavoriteSong = () => {
   const favoriteList = reactive({ songs: [] });
   const getFaoriteSong = (async () => {
     if (!storage.get('userToken')) {
-      router.push({ name: 'home' });
+      router.push({ name: 'home' }).then(() => warningNotify('請先登入'));
       return;
     }
-    await axios({
-      method: 'get',
-      url: 'https://api.sally-handmade.com/music/v1/music/like',
-      headers: { Authorization: `Bearer ${storage.get('userToken')}` },
-    }).then((res) => {
+    await request('get', 'v1/music/like').then((res) => {
       favoriteList.songs = res.data.data;
     }).catch((err) => {
       console.log(err);

@@ -21,8 +21,7 @@
 
 <script>
 import {
-  computed,
-  onBeforeUnmount, reactive, toRefs, watchEffect,
+  computed, onBeforeUnmount, reactive, toRefs, watchEffect,
 } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';

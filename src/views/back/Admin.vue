@@ -51,8 +51,7 @@ const handleAdminLogin = () => {
         storage.set('adminToken', res.data.access_token);
         storage.set('adminRefresh', res.data.refresh_token);
         router.push({ name: 'manage' }).then(() => successNotify('登入成功'));
-      }).catch((err) => {
-        console.log(err.response);
+      }).catch(() => {
         password.value = '';
         errMsg.value = '帳號或密碼有誤，請重新輸入!';
       });

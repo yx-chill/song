@@ -32,8 +32,6 @@
 </template>
 
 <script>
-// import { ref } from 'vue';
-
 export default {
   name: 'Modal',
   props: {
@@ -41,15 +39,11 @@ export default {
   },
   emits: ['deleteData', 'cancel', 'update:modelValue'],
   setup(props, { emit }) {
-    // const isOpen = ref(false);
-
     const deleteData = () => {
       emit('update:modelValue', true);
-      // emit('deleteData');
     };
     const cancel = () => {
       emit('update:modelValue', false);
-      // emit('cancel');
     };
     return { deleteData, cancel };
   },

@@ -27,13 +27,14 @@
 import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
-import axios from 'axios';
-import storage from '@/models/storage';
+// import axios from 'axios';
+// import storage from '@/models/storage';
 
 export default {
   name: 'Header',
+  emits: ['logout'],
   props: ['isLogin', 'title'],
-  setup(props) {
+  setup(props, { emit }) {
     const store = useStore();
     const router = useRouter();
     const isLogin = ref(props.isLogin);
@@ -41,18 +42,7 @@ export default {
     const defaultQuery = computed(() => store.state.defaultQuery);
     const showSearch = computed(() => store.state.showSearch);
     const logout = async () => {
-      await axios({
-        method: 'get',
-        url: 'https://api.sally-handmade.com/music/v1/logout',
-        headers: { Authorization: `Bearer ${storage.get('userToken')}` },
-      }).then(() => {
-        storage.set('userToken', '');
-        storage.set('userRefreshToken', '');
-        console.log('success');
-        window.location.reload();
-      }).catch((err) => {
-        console.log(err);
-      });
+      emit('logout');
     };
     const search = () => {
       if (!queryStr.value.value) {

@@ -22,3 +22,5 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+https://segmentfault.com/a/1190000020210980

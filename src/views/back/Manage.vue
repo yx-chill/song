@@ -8,11 +8,13 @@
 
 <script>
 import { useRouter } from 'vue-router';
+import { reactive } from 'vue';
 import SideBar from '@/components/back/BackSideBar.vue';
 import storage from '@/models/storage';
 import ConfirmModal from '@/components/ConfirmModal.vue';
 import { useConfirmModal } from '@/composables/useConfirmModal';
 import { warningNotify } from '@/composables/useNotification';
+import { get } from '@/includes/adminReq';
 
 export default {
   name: 'Manage',
@@ -24,6 +26,12 @@ export default {
     if (!storage.get('adminToken')) {
       router.push({ name: 'admin' }).then(() => warningNotify('請先登入'));
     }
+    const genreData = reactive({ genres: [] });
+    get('v1/admin/music-type').then((res) => {
+      genreData.genres = res.data.data;
+    }).catch((error) => {
+      console.log(error);
+    });
     return { ...useConfirmModal() };
   },
 };
