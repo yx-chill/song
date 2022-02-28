@@ -1,7 +1,7 @@
 <template>
   <div class="p-5 text-gray-300">
     {{ genreId }}
-    <h2 class="text-2xl font-bold" v-if="!songs.length">暫無此分類歌曲...</h2>
+    <h2 class="text-2xl font-bold" v-if="isNotExist">暫無此分類歌曲...</h2>
     <ul class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-5">
       <li v-for="song in songs" :key="song.id">
         <router-link :to="{ name: 'song', params: { songId: song.id } }"
@@ -18,7 +18,9 @@
 </template>
 
 <script>
-import { computed, reactive, toRefs } from 'vue';
+import {
+  computed, reactive, ref, toRefs, watchEffect,
+} from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import request from '@/includes/request';
 
@@ -26,9 +28,7 @@ import request from '@/includes/request';
 const handleGetGenre = (genreId) => {
   const router = useRouter();
   const getGenre = async () => {
-    await request('get', `v1/music-type/${genreId.value}`).then((res) => {
-      console.log(res);
-    }).catch((error) => {
+    await request('get', `v1/music-type/${genreId.value}`).catch((error) => {
       if (error.response.status === 404) {
         router.push({ name: 'notfound' });
       }
@@ -39,16 +39,19 @@ const handleGetGenre = (genreId) => {
 // 取得該曲風音樂
 const handleGetGenreSongs = (genreId) => {
   const data = reactive({ songs: [] });
+  const isNotExist = ref(false);
   const getGenreSongs = async () => {
     await request('get', `v1/music?type=${genreId.value}`).then((res) => {
       data.songs = res.data.data;
-      console.log(data.songs);
+      isNotExist.value = !res.data.data.length;
     }).catch((error) => {
       console.log(error);
     });
   };
+
+  watchEffect(() => getGenreSongs());
   const { songs } = toRefs(data);
-  return { getGenreSongs, songs };
+  return { getGenreSongs, songs, isNotExist };
 };
 
 export default {
@@ -56,11 +59,13 @@ export default {
   setup() {
     const route = useRoute();
     const genreId = computed(() => route.params.genreId);
+
     const getGenre = handleGetGenre(genreId);
+    const { getGenreSongs, songs, isNotExist } = handleGetGenreSongs(genreId);
+
     getGenre();
-    const { getGenreSongs, songs } = handleGetGenreSongs(genreId);
     getGenreSongs();
-    return { songs, genreId };
+    return { songs, genreId, isNotExist };
   },
 };
 </script>

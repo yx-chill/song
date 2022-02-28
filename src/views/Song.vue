@@ -1,6 +1,7 @@
 <template>
   <section class="song p-5 w-full h-full flex">
-    <div class="w-full  xl:w-1/2 bg-yellow-400 bg-opacity-50 relative">
+    <div class="w-full  xl:w-1/2 bg-opacity-50 relative transform duration-300"
+      :class="isPlay ? 'bg-blue-400' : 'bg-yellow-400'">
       <button class="bg-gray-900 rounded-full w-12 h-12 flex justify-center items-center
         absolute top-3 right-3" v-show="isLogin">
         <i class="far fa-heart text-2xl text-red-600"
@@ -15,7 +16,7 @@
         </div>
       </div>
       <div class="p-10">
-        <div class="flex mb-10">
+        <div class="flex mb-10 items-center">
           <button class="bg-gray-900 rounded-full w-20 h-20 flex justify-center items-center"
             @click.prevent="newSong(song)">
             <i class="fa fa-play ml-1 text-3xl text-gray-300"></i>
@@ -33,7 +34,9 @@
 </template>
 
 <script>
-import { computed, ref, reactive } from 'vue';
+import {
+  computed, ref, reactive, watch,
+} from 'vue';
 import { useStore } from 'vuex';
 import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
@@ -107,18 +110,28 @@ export default {
     const route = useRoute();
     const store = useStore();
     const { songId } = route.params;
+
+    const curr = computed(() => store.getters.getCurrentSong);
     const play = computed(() => store.getters.playing);
+    const isPlay = ref(curr.value.id === +songId);
     const isLogin = ref(storage.get('userToken'));
+
     const { getFaoriteSong, status } = handleFavoriteSong(songId);
     const { favorite, isLike } = handleFavorite(songId, status);
     const { data, song, getSongData } = handleGetSongData(songId);
+
     if (isLogin.value) getFaoriteSong();
     getSongData();
     const newSong = () => {
       store.dispatch('newSong', song.value);
     };
+
+    watch(curr, () => {
+      isPlay.value = (curr.value.id === +songId) || false;
+    });
+
     return {
-      songId, play, song, data, newSong, isLike, favorite, isLogin,
+      songId, play, isPlay, song, data, newSong, isLike, favorite, isLogin,
     };
   },
 };

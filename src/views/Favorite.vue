@@ -1,7 +1,9 @@
 <template>
   <div class="p-7 text-white text-2xl">
-    <h2 class="mb-5" v-if="songs.length">收藏的歌曲</h2>
-    <h2 v-else>尚未有收藏歌曲...</h2>
+    <div v-show="songs.length">
+      <h2 class="mb-5" v-if="songs.length">收藏的歌曲</h2>
+      <h2 v-else>尚未有收藏歌曲...</h2>
+    </div>
     <ul class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-5">
       <li v-for="song in songs" :key="song.id">
         <router-link :to="{ name: 'song', params: { songId: song.id } }"
@@ -28,6 +30,7 @@ import { warningNotify } from '@/composables/useNotification';
 const handleFavoriteSong = () => {
   const router = useRouter();
   const favoriteList = reactive({ songs: [] });
+
   const getFaoriteSong = (async () => {
     if (!storage.get('userToken')) {
       router.push({ name: 'home' }).then(() => warningNotify('請先登入'));
@@ -40,7 +43,7 @@ const handleFavoriteSong = () => {
     });
   });
   const { songs } = toRefs(favoriteList);
-  console.log(songs);
+
   return { getFaoriteSong, songs };
 };
 
@@ -49,9 +52,8 @@ export default {
   setup() {
     const { getFaoriteSong, songs } = handleFavoriteSong();
     getFaoriteSong();
-    return {
-      songs,
-    };
+
+    return { songs };
   },
 };
 </script>

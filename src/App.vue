@@ -9,10 +9,6 @@ import AppNotifications from '@/components/AppNotifications.vue';
 export default {
   name: 'App',
   components: { AppNotifications },
-  setup() {
-    return {
-    };
-  },
 };
 </script>
 

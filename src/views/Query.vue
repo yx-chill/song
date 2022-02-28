@@ -1,8 +1,10 @@
 <template>
   <div class="p-5">
     <div class="font-bold text-2xl text-white mb-3">
-      <p v-if="result.length">有關 "{{ query }}" 的搜尋結果</p>
-      <p v-else>很抱歉，沒有 "{{ query }}" 的搜尋結果</p>
+      <div v-show="result.length">
+        <p v-if="result.length">有關 "{{ query }}" 的搜尋結果</p>
+        <p v-else>很抱歉，沒有 "{{ query }}" 的搜尋結果</p>
+      </div>
       </div>
     <ul class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-5">
       <li v-for="song in result" :key="song.id">
@@ -26,6 +28,7 @@ import {
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 import axios from 'axios';
+
 // 查詢結果
 const handleGetResult = (store) => {
   const route = useRoute();
@@ -54,12 +57,14 @@ export default {
   name: 'Query',
   setup() {
     const store = useStore();
-    store.commit('toggleSearchShow');
     const { result, query } = handleGetResult(store);
+    store.commit('toggleSearchShow');
+
     onBeforeUnmount(() => {
       store.commit('toggleSearchShow');
       store.commit('getDefaultQuery', '');
     });
+
     return { query, result };
   },
 };

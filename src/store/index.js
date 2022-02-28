@@ -1,6 +1,7 @@
 import { createStore } from 'vuex';
-import { Howl } from 'howler';
+import { Howl, Howler } from 'howler';
 import helper from '../includes/helper';
+import storage from '../models/storage';
 
 export default createStore({
   state: {
@@ -11,6 +12,8 @@ export default createStore({
     seek: '00:00',
     duration: '00:00',
     playerProgress: '0%',
+    volumeWidth: storage.get('volume') || 0.5,
+    fastwindSec: storage.get('fastwindSec'),
   },
   mutations: {
     toggleSearchShow(state) {
@@ -21,7 +24,6 @@ export default createStore({
     },
     newSong(state, payload) {
       state.currentSong = payload;
-      console.log(payload);
       state.sound = new Howl({
         src: payload.file,
         html5: true,
@@ -31,6 +33,17 @@ export default createStore({
       state.seek = helper.formatTime(state.sound.seek());
       state.duration = helper.formatTime(state.sound.duration());
       state.playerProgress = `${(state.sound.seek() / state.sound.duration()) * 100}%`;
+    },
+    mute(state, e) {
+      if (!e) {
+        state.volumeWidth = 0;
+      } else {
+        state.volumeWidth = storage.get('volume');
+      }
+    },
+    setFastwindSec(state, sec) {
+      state.fastwindSec = sec;
+      console.log(sec);
     },
   },
   actions: {
@@ -55,9 +68,8 @@ export default createStore({
       }
     },
     updateSeek({ state, dispatch }, e) {
-      if (!state.sound.playing) {
-        return;
-      }
+      if (!state.sound.playing) return;
+
       const { x, width } = e.currentTarget.getBoundingClientRect();
       const clickX = e.clientX - x;
       const percentage = clickX / width;
@@ -67,20 +79,39 @@ export default createStore({
       state.sound.once('seek', () => dispatch('progress'));
     },
     async toggleAudio({ state }) {
-      if (!state.sound.playing) {
-        return;
-      }
+      if (!state.sound.playing) return;
+
       if (state.sound.playing()) {
         state.sound.pause();
       } else {
         state.sound.play();
       }
     },
+    updateVolume({ state }, e) {
+      const { x, width } = e.currentTarget.getBoundingClientRect();
+      const clickX = e.clientX - x;
+      const percentage = (clickX / width).toFixed(2);
+      state.volumeWidth = percentage > 0 ? percentage : 0;
+      Howler.volume(Number(percentage));
+      storage.set('volume', percentage);
+    },
+    fastwind({ state, dispatch }, sec) {
+      if (!state.sound.playing) return;
+      console.log(sec);
+      state.sound.seek(state.sound.seek() + sec);
+      state.sound.once('seek', () => dispatch('progress'));
+    },
   },
   getters: {
     playing: (state) => {
       if (state.sound.playing) {
         return state.sound.playing();
+      }
+      return false;
+    },
+    getCurrentSong: (state) => {
+      if (state.currentSong) {
+        return state.currentSong;
       }
       return false;
     },
