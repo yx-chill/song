@@ -27,7 +27,7 @@
 <script>
 import { ref, watch } from 'vue';
 import { useStore } from 'vuex';
-import storage from '@/models/storage';
+import storage from '@/includes/storage';
 
 export default {
   name: 'Setting',

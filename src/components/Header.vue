@@ -27,8 +27,6 @@
 import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
-// import axios from 'axios';
-// import storage from '@/models/storage';
 
 export default {
   name: 'Header',

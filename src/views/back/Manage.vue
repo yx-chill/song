@@ -10,7 +10,7 @@
 import { useRouter } from 'vue-router';
 import { reactive } from 'vue';
 import SideBar from '@/components/back/BackSideBar.vue';
-import storage from '@/models/storage';
+import storage from '@/includes/storage';
 import ConfirmModal from '@/components/ConfirmModal.vue';
 import { useConfirmModal } from '@/composables/useConfirmModal';
 import { warningNotify } from '@/composables/useNotification';

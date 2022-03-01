@@ -8,40 +8,45 @@
       <i class="fas fa-address-card mr-3"></i>{{ username }}
     </div>
     <ul class="text-lg mb-10">
-      <li class="px-3 py-1 hover:bg-gray-400 rounded-md">
-        <router-link class="block w-full" :to="{ name: 'home' }">
-        <i class="fas fa-home text-xl mr-3"></i>首頁
+      <li class="px-3 py-1 hover:bg-gray-400 rounded-md"
+        :class="isActive(item.path) ? 'text-purple-500' : ''"
+        v-for="item in menuItem" :key="item.name">
+        <router-link class="block w-full" :to="{ name: item.name }">
+          <i class="text-xl mr-3" :class="item.icon"></i>{{ item.text }}
         </router-link></li>
-      <li class="px-3 py-1 hover:bg-gray-400 rounded-md">
-        <router-link class="block w-full" :to="{ name: 'search' }">
-        <i class="fas fa-search text-xl mr-4"></i>搜尋
-        </router-link>
-      </li>
-      <li class="px-3 py-1 hover:bg-gray-400 rounded-md">
-        <router-link class="block w-full" :to="{ name: 'about' }">
-        <i class="fas fa-search text-xl mr-4"></i>測試頁
-        </router-link>
-      </li>
     </ul>
     <ul>
-      <li class="px-3 py-1 hover:bg-gray-500 rounded-md cursor-pointer" @click="toLogin">
+      <li class="px-3 py-1 hover:bg-gray-500 rounded-md cursor-pointer"
+        :class="isActive(['favorite']) ? 'text-purple-500' : ''" @click="toLogin">
         <i class="far fa-heart text-xl mr-3"></i>收藏的歌曲</li>
     </ul>
   </nav>
 </template>
 
 <script>
-import { toRef } from 'vue';
-import { useRouter } from 'vue-router';
+import { toRef, computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 export default {
   name: 'SideBar',
   props: ['isLogin', 'username'],
   emits: ['toLogin'],
   setup(props, { emit }) {
+    const route = useRoute();
     const router = useRouter();
     const isLogin = toRef(props, 'isLogin');
     const username = toRef(props, 'username');
+    const menuItem = [
+      {
+        name: 'home', text: '首頁', icon: 'fas fa-home', path: ['home'],
+      },
+      {
+        name: 'search', text: '搜尋', icon: 'fas fa-search', path: ['search', 'genre', 'query'],
+      },
+      {
+        name: 'about', text: '測試頁', icon: 'fas fa-search', path: ['about'],
+      },
+    ];
     const toLogin = () => {
       if (!isLogin.value) {
         emit('toLogin');
@@ -49,9 +54,11 @@ export default {
         router.push({ name: 'favorite' });
       }
     };
+    const path = computed(() => route.path);
+    const isActive = (to) => to.find((item) => path.value.startsWith(`/${item}`));
     return {
       // eslint-disable-next-line vue/no-dupe-keys
-      isLogin, username, toLogin,
+      menuItem, isLogin, username, toLogin, isActive,
     };
   },
 };

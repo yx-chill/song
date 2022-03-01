@@ -27,7 +27,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
-import storage from '@/models/storage';
+import storage from '@/includes/storage';
 import Loading, { useLoading } from '@/components/Loading.vue';
 import { successNotify } from '@/composables/useNotification';
 

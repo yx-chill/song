@@ -1,5 +1,5 @@
 import axios from 'axios';
-import storage from '@/models/storage';
+import storage from '@/includes/storage';
 
 const refreshToken = () => axios({
   method: 'post',

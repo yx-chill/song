@@ -41,7 +41,7 @@ import { useStore } from 'vuex';
 import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import request from '@/includes/request';
-import storage from '@/models/storage';
+import storage from '@/includes/storage';
 
 // 取得收藏列表
 const handleFavoriteSong = (songId) => {

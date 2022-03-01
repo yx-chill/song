@@ -22,7 +22,7 @@
 <script>
 import { reactive, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
-import storage from '@/models/storage';
+import storage from '@/includes/storage';
 import request from '@/includes/request';
 import { warningNotify } from '@/composables/useNotification';
 

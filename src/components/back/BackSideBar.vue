@@ -50,7 +50,7 @@
 <script>
 import { useRouter } from 'vue-router';
 import { get } from '@/includes/adminReq';
-import storage from '@/models/storage';
+import storage from '@/includes/storage';
 import { successNotify } from '@/composables/useNotification';
 
 export default {

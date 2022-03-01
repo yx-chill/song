@@ -1,7 +1,7 @@
 import { createStore } from 'vuex';
 import { Howl, Howler } from 'howler';
 import helper from '../includes/helper';
-import storage from '../models/storage';
+import storage from '../includes/storage';
 
 export default createStore({
   state: {
@@ -43,7 +43,6 @@ export default createStore({
     },
     setFastwindSec(state, sec) {
       state.fastwindSec = sec;
-      console.log(sec);
     },
   },
   actions: {
@@ -97,7 +96,7 @@ export default createStore({
     },
     fastwind({ state, dispatch }, sec) {
       if (!state.sound.playing) return;
-      console.log(sec);
+      if (state.sound.seek() + sec > state.sound.duration()) return;
       state.sound.seek(state.sound.seek() + sec);
       state.sound.once('seek', () => dispatch('progress'));
     },

@@ -13,7 +13,7 @@
 
 <script>
 import { ref } from 'vue';
-import storage from '@/models/storage';
+import storage from '@/includes/storage';
 import Header from '@/components/Header.vue';
 import SideBar from '@/components/SideBar.vue';
 import Player from '@/components/Player.vue';
@@ -57,7 +57,7 @@ export default {
   },
 };
 </script>
-a = a
+
 <style scoped>
 .main {
   height: calc(100vh - 90px);
