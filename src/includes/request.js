@@ -38,7 +38,7 @@ instance.interceptors.response.use(
         }).catch(() => {
           storage.remove('userToken');
           storage.remove('userRefreshToken');
-          alert('因長時間未上線，請重新登入');
+          window.location.reload();
         }).finally(() => {
           isRefreshing = false;
         });

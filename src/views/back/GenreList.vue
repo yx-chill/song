@@ -7,7 +7,7 @@
       <div class="w-2/4">
         <VeeField type="text" name="name" class="rounded w-full p-2 text-2xl"
           placeholder="輸入曲風名稱" />
-          <ErrorMessage class="text-white" name="name" />
+          <ErrorMessage class="text-white font-bold" name="name" />
       </div>
       <div class="colorgroup relative w-20">
         <i class="fas fa-palette absolute top-2 left-3 text-xl"></i>
@@ -17,6 +17,8 @@
       <button type="submit"
         class="border border-white text-white px-5 py-2 text-xl rounded">
         新增</button>
+        <input type="reset" value="清除" ref="resetBtn"
+          class="fixed -top-10 opacity-0">
     </VeeForm>
     <div class="border-2 border-yellow-600 shadow-lg">
       <div class="grid grid-cols-10 gap-4 h-14 text-white text-xl font-bold bg-yellow-600">
@@ -37,7 +39,7 @@
 </template>
 
 <script>
-import { reactive, toRefs } from 'vue';
+import { reactive, ref, toRefs } from 'vue';
 import { post, get, del } from '@/includes/adminReq';
 import GenreItem from '@/components/back/GenreItem.vue';
 import Loading, { useLoading } from '../../components/Loading.vue';
@@ -57,14 +59,17 @@ const handleGenres = () => {
   return { genreData, getGenres };
 };
 // 新增曲風
-const handleAddGenre = (genreData) => {
+const handleAddGenre = (genreData, resetBtn) => {
   const addGenre = async (data) => {
     showLoading('曲風新增中...');
     await post('v1/admin/music-type', data).then((res) => {
       genreData.genres.push(res.data.data);
+      successNotify('新增成功');
     }).catch((err) => {
-      console.log(err);
+      console.log(err.response);
+      errorNotify(err.response);
     });
+    resetBtn.value.click();
     hideLoading();
   };
   return addGenre;
@@ -105,16 +110,17 @@ export default {
   name: 'GenreList',
   components: { GenreItem, Loading },
   setup() {
+    const resetBtn = ref(null);
     const genreSchema = { name: 'required' };
     const { genreData, getGenres } = handleGenres();
-    const addGenre = handleAddGenre(genreData);
+    const addGenre = handleAddGenre(genreData, resetBtn);
     const editGenre = handleEditGenre();
     const deleteGenre = handleDeleteGenre(genreData);
     getGenres();
     const { genres } = toRefs(genreData);
     // eslint-disable-next-line object-curly-newline
     return {
-      genres, genreSchema, addGenre, editGenre, deleteGenre, loadingData,
+      genres, resetBtn, genreSchema, addGenre, editGenre, deleteGenre, loadingData,
     };
   },
 };

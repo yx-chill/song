@@ -3,9 +3,9 @@
     bg-gray-800 absolute bottom-0">
     <div class="w-30">
       <div class="flex items-center" v-if="currentSong.name">
-        <div class="w-14 h-14 mr-3">
+        <div class="w-14 h-14 mr-3 flex justify-center items-center bg-white rounded">
           <img alt="song photo"
-            :src="currentSong.image || 'http://www.davidguo.idv.tw/cube/images/SQ-1/SQ2.png'">
+            :src="currentSong.image || require('@/assets/headphone.jpg')">
         </div>
         <div>
             <p class=" text-base mb-1">{{ currentSong.name }}</p>

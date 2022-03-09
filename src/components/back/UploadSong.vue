@@ -17,26 +17,61 @@
           @drop.prevent.stop="upload($event)">
         <h5>Drop your files here</h5>
       </div>
-      <VeeField type="file" name="file" accept="audio/mpeg" @change="upload($event)" />
+      <div class="flex items-center gap-x-4 mt-6">
+        <button type="button" class="block bg-green-500 rounded text-white
+          hover:bg-green-400 duration-500 px-2 py-1"
+          @click="choose">選擇歌曲</button>
+        <p v-if="file">{{ file.name }}
+          <i class="fa fa-times text-xl ml-3 cursor-pointer" @click="cancelFile" />
+        </p>
+        <p class="font-bold" v-else>尚未上傳歌曲</p>
+      </div>
+      <input class="fixed -top-10 opacity-0"
+        type="file" name="file" accept="audio/mpeg"
+        @change="upload($event)" ref="fileDom" />
     </div>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, toRef, watch } from 'vue';
+import { warningNotify } from '@/composables/useNotification';
 
 export default {
   name: 'UploadSong',
   emits: ['uploadSong'],
-  setup(_, { emit }) {
+  props: ['isClean'],
+  setup(props, { emit }) {
+    const isClean = toRef(props, 'isClean');
+    const fileDom = ref(null);
     const isDragover = ref(false);
-    const fileName = ref('');
+    const file = ref('');
+    const choose = () => {
+      fileDom.value.click();
+    };
+    const cancelFile = () => {
+      fileDom.value.value = '';
+      file.value = '';
+      emit('uploadSong', file.value);
+    };
     const upload = (e) => {
       isDragover.value = false;
-      emit('uploadSong', e);
+      file.value = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
+      if (file.value.type !== 'audio/mpeg') {
+        warningNotify('檔案格式錯誤', '請選擇歌曲檔案');
+        fileDom.value.vlue = '';
+        file.value = '';
+      }
+      emit('uploadSong', file.value);
     };
+
+    watch(isClean, () => {
+      cancelFile();
+    });
+
     return {
-      isDragover, upload, fileName,
+      // eslint-disable-next-line vue/no-dupe-keys
+      file, fileDom, isDragover, choose, cancelFile, upload, isClean,
     };
   },
 };

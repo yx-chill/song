@@ -2,39 +2,39 @@
   <main class="main overflow-hidden p-20 relative">
     <Loading v-if="loadingData.showLoading" :message="loadingData.loadingMsg" />
     <div class="registerform bg-purple-200 bg-opacity-80 p-4 rounded">
-      <VeeForm :validation-schema="schema" @submit="register">
-        <div class="emailgroup relative mb-3">
+      <VeeForm :validation-schema="schema" @submit="register" class="space-y-3">
+        <div class="emailgroup relative">
           <i class="fas fa-user absolute top-2 left-3 text-xl"></i>
           <VeeField type="email" name="email" placeholder="電子郵件"
-            class="h-10 pl-10 text-xl block w-full rounded" />
-            <ErrorMessage class="text-red-600" name="email" />
+            class="h-10 pl-10 text-xl block w-full rounded mb-3" />
+            <ErrorMessage class="text-red-600 font-bold" name="email" />
         </div>
-        <div class="namegroup relative mb-3">
+        <div class="namegroup relative">
           <i class="fas fa-signature absolute top-2 left-3 text-xl"></i>
           <VeeField type="text" name="name" placeholder="暱稱"
-            class="h-10 pl-10 text-xl block w-full rounded" />
-            <ErrorMessage class="text-red-600" name="name" />
+            class="h-10 pl-10 text-xl block w-full rounded mb-3" />
+            <ErrorMessage class="text-red-600 font-bold" name="name" />
         </div>
-        <div class="passwordgroup relative mb-3">
+        <div class="passwordgroup relative">
           <i class="fas fa-lock absolute top-2 left-3 text-xl"></i>
           <VeeField type="password" name="password" placeholder="密碼"
-            class="h-10 px-10 text-xl block w-full rounded" />
-            <ErrorMessage class="text-red-600" name="password" />
+            class="h-10 px-10 text-xl block w-full rounded mb-3" />
+            <ErrorMessage class="text-red-600 font-bold" name="password" />
         </div>
-        <div class="password_confirmationgroup relative mb-2">
-          <i class="fas fa-lock absolute top-2 left-3 text-xl"></i>
+        <div class="password_confirmationgroup relative">
+          <i class="fas fa-clipboard-check absolute top-2 left-3 text-xl"></i>
           <VeeField type="password" name="password_confirmation" placeholder="確認密碼"
-            class="h-10 px-10 text-xl block w-full rounded" />
-            <ErrorMessage class="text-red-600" name="password_confirmation" />
+            class="h-10 px-10 text-xl block w-full rounded mb-3" />
+            <ErrorMessage class="text-red-600 font-bold" name="password_confirmation" />
         </div>
         <p class="text-white text-center bg-red-500 px-2 py-1 rounded mb-2"
             v-if="errMsg">{{ errMsg }}</p>
-        <button type="submit" class="block w-full mb-3 font-bold
+        <button type="submit" class="block w-full font-bold
           bg-purple-600 text-white py-1.5 px-3 rounded transition hover:bg-purple-700">
             註冊
         </button>
       </VeeForm>
-      <div class="pt-2 border-gray-400 border-t-2 text-center">
+      <div class="mt-3 pt-2 border-gray-400 border-t-2 text-center">
         <p class="font-bold mb-3">已有帳戶?</p>
         <router-link class="block w-full rounded-full border-2 py-1.5 font-bold
           hover:bg-purple-200" :to="{ name: 'login' }">

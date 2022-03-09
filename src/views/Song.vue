@@ -11,7 +11,7 @@
         :style="{ 'animation-play-state': play ? 'running' : 'paused' }">
         <div class="w-28 h-28 rounded-full overflow-hidden absolute top-1/2 left-1/2
           transform -translate-x-1/2  -translate-y-1/2">
-          <img :src="data.song.image || 'http://www.davidguo.idv.tw/cube/images/SQ-1/SQ2.png'" alt="song photo"
+          <img :src="data.song.image || require('@/assets/headphone.jpg')" alt="song photo"
             class="w-full h-full">
         </div>
       </div>
@@ -35,7 +35,7 @@
 
 <script>
 import {
-  computed, ref, reactive, watch,
+  computed, ref, reactive, watch, watchEffect,
 } from 'vue';
 import { useStore } from 'vuex';
 import { useRoute, useRouter } from 'vue-router';
@@ -119,6 +119,8 @@ export default {
     const { getFaoriteSong, status } = handleFavoriteSong(songId);
     const { favorite, isLike } = handleFavorite(songId, status);
     const { data, song, getSongData } = handleGetSongData(songId);
+
+    watchEffect(() => handleFavorite(songId, status));
 
     if (isLogin.value) getFaoriteSong();
     getSongData();

@@ -18,9 +18,14 @@
       gap-5 transition duration-500">
       <li v-for="song in songs" :key="song.id" class="transition duration-500">
         <router-link :to="{ name: 'song', params: { songId: song.id } }"
-          class="block p-4 bg-gray-600 hover:bg-gray-500 rounded transition duration-500">
-          <div class="aspect-w-1 aspect-h-1 rounded overflow-hidden mb-4">
-            <img :src="song.image || 'http://www.davidguo.idv.tw/cube/images/SQ-1/SQ2.png'" alt="song photo">
+          class="block p-4 bg-gray-600 hover:bg-gray-500 rounded duration-500">
+          <div class="aspect-w-1 aspect-h-1 rounded overflow-hidden mb-4 relative">
+            <!-- :style="{backgroundImage: song.image ?
+            'url(' + song.image + ')' : 'url(' + defaultImg + ')' }" -->
+            <div class="absolute inset-0 bg-center filter blur-xl"
+              :style="{backgroundImage: song.image ?
+              'url(' + song.image + ')' : 'url(' + defaultImg + ')' }"></div>
+            <img :src="song.image || require('@/assets/headphone.jpg')" alt="song photo">
           </div>
           <h2 class="text-white mb-2" :title="song.name">{{ song.name }}</h2>
           <p class="text-gray-300">{{ song.composer }}</p>
@@ -53,6 +58,8 @@ export default {
   name: 'Home',
   setup() {
     const currentTag = ref('genaral');
+    // eslint-disable-next-line global-require
+    const defaultImg = require('../assets/headphone.jpg');
     const { getSongList, songs } = handleSongList();
     getSongList();
     const genaral = () => {
@@ -71,7 +78,7 @@ export default {
     };
 
     return {
-      songs, currentTag, genaral, hot, watch,
+      songs, currentTag, genaral, hot, watch, defaultImg,
     };
   },
 };

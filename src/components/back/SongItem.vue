@@ -3,7 +3,7 @@
     :class="i % 2 === 0 ? 'bg-blue-300' : 'bg-blue-400'">
     <div class="flex">
       <div class="w-11 h-11 m-auto">
-        <img :src="song.image ? song.image : 'http://www.davidguo.idv.tw/cube/images/SQ-1/SQ2.png'" alt="song photo"
+        <img :src="preview || song.image || require('@/assets/headphone.jpg')" alt="song photo"
           class="w-full h-full">
       </div>
     </div>
@@ -32,14 +32,11 @@
   <div v-show="showEditForm">
     <VeeForm :validation-schema="songSchema" @submit="editSong($event, song.id)"
       class="bg-green-300 flex items-center gap-4 py-2">
-      <div class="text-center w-1/10">
-        <div class="border mb-4 w-11 h-11 mx-auto">
-          <img :src="preview ? preview : (song.image || 'http://www.davidguo.idv.tw/cube/images/SQ-1/SQ2.png')"
-            alt="music photo" class="w-full h-full">
-        </div>
-        <VeeField type="file" name="image" accept="image/*" @change="previewImage($event)" />
+      <div class="text-center w-1/6 overflow-ellipsis">
+        <VeeField type="file" name="image" accept="image/*" @change="previewImage($event)"
+          class="w-full overflow-ellipsis" />
       </div>
-      <div class=" w-3/10">
+      <div class="w-1/4">
         <div class="namegroup relative w-4/5 mx-auto">
           <i class="fas fa-file-signature absolute top-2 left-3 text-xl"></i>
           <VeeField type="text" name="name" placeholder="歌曲名稱" :value="song.name"
@@ -84,7 +81,9 @@
 </template>
 
 <script>
-import { ref, toRef, reactive } from 'vue';
+import {
+  ref, toRef, reactive, watch,
+} from 'vue';
 import { Switch } from '@headlessui/vue';
 import { useConfirm } from '@/composables/useConfirmModal';
 
@@ -119,6 +118,10 @@ export default {
       });
     };
 
+    watch(showEditForm, (newVal) => {
+      if (!newVal) preview.value = '';
+    });
+
     const editSong = async (e, id) => {
       let statusCode = 1;
       if (!enabled.value) {
@@ -141,6 +144,7 @@ export default {
       song.value.status = enabled.value;
       showEditForm.value = false;
     };
+
     const deleteSong = (id) => {
       useConfirm().then((result) => {
         if (result) {
@@ -148,6 +152,7 @@ export default {
         }
       });
     };
+
     return {
       songSchema,
       // eslint-disable-next-line vue/no-dupe-keys

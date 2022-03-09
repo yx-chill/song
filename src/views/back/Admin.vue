@@ -10,6 +10,8 @@
       </div>
       <div class="passwordgroup relative mb-2">
         <i class="fas fa-lock absolute top-2 left-3 text-xl"></i>
+        <i class="absolute top-2 right-3 text-xl cursor-pointer"
+          :class="showPwd ? 'fas fa-eye-slash' : 'fas fa-eye'" @click="toggleType"></i>
         <input type="password" name="password" ref="pwd" placeholder="密碼"
           class="password h-10 px-10 text-xl block w-full rounded" v-model="password">
       </div>
@@ -32,6 +34,21 @@ import Loading, { useLoading } from '@/components/Loading.vue';
 import { successNotify } from '@/composables/useNotification';
 
 const { loadingData, showLoading, hideLoading } = useLoading();
+
+const handlePwdType = () => {
+  const pwd = ref(null);
+  const showPwd = ref(false);
+  const toggleType = () => {
+    if (!showPwd.value) {
+      pwd.value.type = 'text';
+    } else {
+      pwd.value.type = 'password';
+    }
+    showPwd.value = !showPwd.value;
+  };
+  return { pwd, showPwd, toggleType };
+};
+
 // 後台登入
 const handleAdminLogin = () => {
   const router = useRouter();
@@ -69,10 +86,11 @@ export default {
   name: 'Admin',
   components: { Loading },
   setup() {
+    const { pwd, showPwd, toggleType } = handlePwdType();
     // eslint-disable-next-line object-curly-newline
     const { email, password, errMsg, adminLogin } = handleAdminLogin();
     return {
-      adminLogin, email, password, errMsg, loadingData,
+      adminLogin, email, password, errMsg, loadingData, pwd, showPwd, toggleType,
     };
   },
 };

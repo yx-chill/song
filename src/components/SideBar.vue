@@ -1,5 +1,5 @@
 <template>
-  <nav class="side-bar bg-gray-900 h-full px-2 py-4 text-gray-300">
+  <nav class="side-bar bg-gray-900 h-full px-2 py-4 text-gray-300 overflow-auto">
     <div class="logo h-12 text-white text-2xl font-black text-center">
       <i class="fas fa-music"></i>
       Music</div>
@@ -42,9 +42,6 @@ export default {
       },
       {
         name: 'search', text: '搜尋', icon: 'fas fa-search', path: ['search', 'genre', 'query'],
-      },
-      {
-        name: 'about', text: '測試頁', icon: 'fas fa-search', path: ['about'],
       },
     ];
     const toLogin = () => {

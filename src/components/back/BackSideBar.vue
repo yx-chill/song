@@ -19,12 +19,6 @@
         <ul class="text-center">
           <li class="py-1"><router-link :to="{ name: 'song-list' }"
             class="block w-full rounded hover:bg-opacity-20 hover:bg-white px-3 py-1">
-            <i class="fas fa-chart-line text-xl mr-4"></i>
-            <span class="text hidden">儀錶板</span>
-            </router-link>
-          </li>
-          <li class="py-1"><router-link :to="{ name: 'song-list' }"
-            class="block w-full rounded hover:bg-opacity-20 hover:bg-white px-3 py-1">
             <i class="fas fa-list-ul text-xl mr-4"></i>
             <span class="text hidden">歌曲列表</span>
             </router-link>

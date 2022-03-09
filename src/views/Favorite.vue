@@ -9,7 +9,10 @@
         <router-link :to="{ name: 'song', params: { songId: song.id } }"
           class="song block p-4 bg-gray-600 hover:bg-gray-500 rounded">
           <div class="aspect-w-1 aspect-h-1 rounded overflow-hidden mb-4">
-            <img :src="song.image || 'http://www.davidguo.idv.tw/cube/images/SQ-1/SQ2.png'" alt="song photo">
+            <div class="absolute inset-0 bg-center filter blur-xl"
+              :style="{backgroundImage: song.image ?
+              'url(' + song.image + ')' : 'url(' + defaultImg + ')' }"></div>
+            <img :src="song.image || require('@/assets/headphone.jpg')" alt="song photo">
           </div>
           <h2 class="text-white mb-2" :title="song.name">{{ song.name }}</h2>
           <p class="text-gray-300">{{ song.composer }}</p>
@@ -50,10 +53,12 @@ const handleFavoriteSong = () => {
 export default {
   name: 'Favorite',
   setup() {
+    // eslint-disable-next-line global-require
+    const defaultImg = require('../assets/headphone.jpg');
     const { getFaoriteSong, songs } = handleFavoriteSong();
     getFaoriteSong();
 
-    return { songs };
+    return { defaultImg, songs };
   },
 };
 </script>

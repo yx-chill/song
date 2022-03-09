@@ -18,7 +18,7 @@
       </div>
       <button type="button" class="text-purple-200 font-bold text-sm px-3 py-2
         rounded-sm border border-purple-200 hover:bg-purple-200 hover:text-gray-800
-          transition duration-300" v-else @click="logout">登出</button>
+          transition duration-300" v-else @click="logout" :disabled="disable">登出</button>
     </div>
   </header>
 </template>
@@ -31,7 +31,7 @@ import { useRouter } from 'vue-router';
 export default {
   name: 'Header',
   emits: ['logout'],
-  props: ['isLogin', 'title'],
+  props: ['isLogin', 'title', 'disable'],
   setup(props, { emit }) {
     const store = useStore();
     const router = useRouter();

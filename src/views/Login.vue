@@ -2,29 +2,29 @@
   <main class="main overflow-hidden p-20 relative">
     <Loading v-if="loadingData.showLoading" :message="loadingData.loadingMsg" />
     <div class="loginform bg-purple-200 bg-opacity-80 p-4 rounded">
-      <VeeForm :validation-schema="loginSchema" @submit="login($event)">
+      <VeeForm :validation-schema="loginSchema" @submit="login($event)" class="space-y-3">
         <div class="emailgroup relative mb-3">
           <i class="fas fa-user absolute top-2 left-3 text-xl"></i>
           <VeeField type="email" name="email" placeholder="電子郵件"
             class="h-10 pl-10 text-xl block w-full rounded mb-1" />
-            <ErrorMessage class="text-red-600" name="email" />
+            <ErrorMessage class="text-red-500 font-bold" name="email" />
         </div>
-        <div class="passwordgroup relative mb-3">
+        <div class="passwordgroup relative">
           <i class="fas fa-lock absolute top-2 left-3 text-xl"></i>
           <i class="absolute top-2 right-3 text-xl cursor-pointer"
-          :class="eye" @click="togglepwdtype"></i>
+          :class="showPwd ? 'fas fa-eye-slash' : 'fas fa-eye'" @click="toggleType"></i>
           <input type="password" name="password" placeholder="密碼" ref="pwd"
-            class="password h-10 px-10 text-xl block w-full rounded mb-3" v-model="password" />
-          <p class="text-white text-center bg-red-500 px-2 py-1 rounded"
+            class="password h-10 px-10 text-xl block w-full rounded mb-2" v-model="password" />
+          <p class="text-white text-center bg-red-500 px-2 py-1 rounded "
             v-if="errMsg">{{ errMsg }}</p>
         </div>
-        <button type="submit" class="block w-full mb-3 font-bold bg-purple-600
-          text-white py-1.5 px-3 rounded transition hover:bg-purple-700"
+        <button type="submit" class="block w-full font-bold bg-purple-600
+          text-white py-1.5 px-3  rounded transition hover:bg-purple-700"
           :disabled="disabled">
             登入
         </button>
       </VeeForm>
-      <div class="pt-2 border-gray-400 border-t-2 text-center">
+      <div class="mt-3 pt-2 border-gray-400 border-t-2 text-center">
         <p class="font-bold mb-3">未註冊帳戶?</p>
         <router-link class="block w-full rounded-full border-2 py-1.5 font-bold
           hover:bg-purple-200" :to="{ name: 'register' }">
@@ -45,21 +45,22 @@ import { successNotify } from '@/composables/useNotification';
 
 const loginSchema = { email: 'required|min:3|max:50|email' };
 const { loadingData, showLoading, hideLoading } = useLoading();
+
 // 切換密碼欄type
 const handlePwdType = () => {
   const pwd = ref(null);
-  const eye = ref('fas fa-eye');
-  const togglepwdtype = () => {
-    if (eye.value === 'fas fa-eye') {
-      eye.value = 'fas fa-eye-slash';
+  const showPwd = ref(false);
+  const toggleType = () => {
+    if (!showPwd.value) {
       pwd.value.type = 'text';
     } else {
-      eye.value = 'fas fa-eye';
       pwd.value.type = 'password';
     }
+    showPwd.value = !showPwd.value;
   };
-  return { pwd, eye, togglepwdtype };
+  return { pwd, showPwd, toggleType };
 };
+
 // 登入
 const handleLogin = () => {
   const router = useRouter();
@@ -84,7 +85,6 @@ const handleLogin = () => {
         router.push({ name: 'home' }).then(() => successNotify('登入成功'));
       }).catch((err) => {
         console.log(err.response.status);
-        console.log('error');
         password.value = '';
         errMsg.value = '信箱或密碼有誤，請重新輸入!';
       });
@@ -103,11 +103,11 @@ export default {
   name: 'Login',
   components: { Loading },
   setup() {
-    const { pwd, eye, togglepwdtype } = handlePwdType();
+    const { pwd, showPwd, toggleType } = handlePwdType();
     // eslint-disable-next-line object-curly-newline
     const { errMsg, disabled, password, login } = handleLogin();
     return {
-      loginSchema, pwd, eye, togglepwdtype, loadingData, errMsg, disabled, password, login,
+      loginSchema, pwd, showPwd, toggleType, loadingData, errMsg, disabled, password, login,
     };
   },
 };

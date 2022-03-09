@@ -2,7 +2,7 @@ import {
   Form as VeeForm, Field as VeeField, defineRule, ErrorMessage, configure,
 } from 'vee-validate';
 import {
-  required, min, max, alpha_spaces as alphaSpaces, email,
+  required, min, max, email,
   min_value as minVal, max_value as maxVal, confirmed,
 } from '@vee-validate/rules';
 
@@ -15,7 +15,6 @@ export default {
     defineRule('required', required);
     defineRule('min', min);
     defineRule('max', max);
-    defineRule('alpha_spaces', alphaSpaces);
     defineRule('email', email);
     defineRule('min_value', minVal);
     defineRule('max_value', maxVal);
@@ -24,14 +23,13 @@ export default {
     configure({
       generateMessage: (ctx) => {
         const messages = {
-          required: `The field ${ctx.field} is required.`,
-          min: `The field ${ctx.field} is too short.`,
-          max: `The field ${ctx.field} is too long.`,
-          alpha_spaces: `The field ${ctx.field} may only contain alphabetical characters and spaces.`,
-          email: `The field ${ctx.field} must be a valid email.`,
-          min_value: `The field ${ctx.field} is too low.`,
-          max_value: `The field ${ctx.field} is too high.`,
-          passwords_mismatch: "The passwords don't match.",
+          required: '*此攔必填',
+          min: '長度不足',
+          max: '超過字數上限',
+          email: '信箱輸入有誤',
+          min_value: '字數不足',
+          max_value: '超過字數上限',
+          passwords_mismatch: '與密碼不相同',
         };
         const message = messages[ctx.rule.name] ? messages[ctx.rule.name] : `The field ${ctx.field} is invalid.`;
 

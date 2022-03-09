@@ -3,6 +3,11 @@ body {
   letter-spacing:2px;
 }
 
+img {
+  object-fit: contain;
+  object-position: center;
+}
+
 .vue-notification-group {
   @apply mt-4;
 }
