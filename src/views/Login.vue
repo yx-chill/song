@@ -5,7 +5,7 @@
       <VeeForm :validation-schema="loginSchema" @submit="login($event)" class="space-y-3">
         <div class="emailgroup relative mb-3">
           <i class="fas fa-user absolute top-2 left-3 text-xl"></i>
-          <VeeField type="email" name="email" placeholder="電子郵件"
+          <VeeField type="email" name="email" placeholder="電子郵件" value="guest@gmail.com"
             class="h-10 pl-10 text-xl block w-full rounded mb-1" />
             <ErrorMessage class="text-red-500 font-bold" name="email" />
         </div>
@@ -67,7 +67,7 @@ const handleLogin = () => {
   const data = reactive({ email: '', password: '' });
   const errMsg = ref('');
   const disabled = ref(false);
-  const password = ref('');
+  const password = ref('guestguest');
   const login = async (e) => {
     data.email = e.email;
     data.password = password.value;

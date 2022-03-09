@@ -50,6 +50,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 import Loading, { useLoading } from '@/components/Loading.vue';
+import { successNotify } from '@/composables/useNotification';
 
 const schema = ({
   name: 'required|min:3|max:10',
@@ -73,7 +74,7 @@ const handleRegister = () => {
       data,
     }).then((res) => {
       console.log(res.data.message);
-      router.push({ name: 'login' });
+      router.push({ name: 'login' }).then(() => successNotify('註冊成功'));
     }).catch((err) => {
       errMsg.value = err.response.data.errors.email[0] || '';
     });

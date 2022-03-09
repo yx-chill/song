@@ -52,8 +52,8 @@ const handlePwdType = () => {
 // 後台登入
 const handleAdminLogin = () => {
   const router = useRouter();
-  const email = ref('');
-  const password = ref('');
+  const email = ref('admin@gmail.com');
+  const password = ref('musicmusic');
   const errMsg = ref('');
   const adminLogin = async () => {
     const data = { email: email.value, password: password.value };
