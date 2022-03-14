@@ -1,14 +1,20 @@
 <template>
     <router-view />
+    <Loading v-model="show" :message="msg" />
     <AppNotifications />
 </template>
 
 <script>
 import AppNotifications from '@/components/AppNotifications.vue';
+import Loading from '@/components/Loading.vue';
+import { useLoad } from '@/composables/useLoading';
 
 export default {
   name: 'App',
-  components: { AppNotifications },
+  components: { AppNotifications, Loading },
+  setup() {
+    return { ...useLoad() };
+  },
 };
 </script>
 

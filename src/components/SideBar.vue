@@ -64,5 +64,6 @@ export default {
 <style>
 .side-bar {
   width: 240px;
+  min-width: 180px;
 }
 </style>

@@ -21,34 +21,45 @@
 
 <script>
 import {
-  computed, reactive, ref, toRefs, watchEffect,
+  computed, reactive, ref, toRefs, watch,
 } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import request from '@/includes/request';
+import { showLoading, hideLoading } from '@/composables/useLoading';
 
 // 檢查是否有該曲風
 const handleGetGenre = (genreId) => {
   const router = useRouter();
   const getGenre = async () => {
-    await request('get', `v1/music-type/${genreId.value}`).catch((error) => {
-      if (error.response.status === 404) {
+    if (genreId.value === undefined) return;
+
+    try {
+      await request('get', `v1/music-type/${genreId.value}`);
+    } catch (err) {
+      if (err.response.status === 404) {
         router.push({ name: 'notfound' });
       }
-    });
+    }
   };
   return getGenre;
 };
+
 // 取得該曲風音樂
 const handleGetGenreSongs = (genreId) => {
   const data = reactive({ songs: [] });
   const isNotExist = ref(false);
   const getGenreSongs = async () => {
-    await request('get', `v1/music?type=${genreId.value}`).then((res) => {
+    showLoading();
+    try {
+      const res = await request('get', 'v1/music', {
+        type: genreId.value,
+      });
       data.songs = res.data.data;
       isNotExist.value = !res.data.data.length;
-    }).catch((error) => {
-      console.log(error);
-    });
+    } catch (err) {
+      console.log(err);
+    }
+    hideLoading();
   };
   const { songs } = toRefs(data);
 
@@ -68,10 +79,12 @@ export default {
 
     getGenre();
     getGenreSongs();
-    watchEffect(() => {
+
+    watch(genreId, () => {
       getGenre();
       getGenreSongs();
     });
+
     return {
       songs, genreId, isNotExist, defaultImg,
     };

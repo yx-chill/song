@@ -1,6 +1,5 @@
 <template>
 <section class="relative">
-  <Loading v-if="loadingData.showLoading" :message="loadingData.loadingMsg" />
   <div class="container bg-red-400 mx-auto p-3 h-full flex flex-col">
     <VeeForm @submit="addGenre" :validation-schema="genreSchema"
       class="flex justify-center items-center gap-4 p-2 mb-3">
@@ -42,46 +41,48 @@
 import { reactive, ref, toRefs } from 'vue';
 import { post, get, del } from '@/includes/adminReq';
 import GenreItem from '@/components/back/GenreItem.vue';
-import Loading, { useLoading } from '../../components/Loading.vue';
 import { successNotify, errorNotify } from '@/composables/useNotification';
+import { showLoading, hideLoading } from '@/composables/useLoading';
 
-const { loadingData, showLoading, hideLoading } = useLoading();
 // 取得曲風
 const handleGenres = () => {
   const genreData = reactive({ genres: [] });
   const getGenres = async () => {
-    await get('v1/admin/music-type').then((res) => {
+    showLoading();
+    try {
+      const res = await get('v1/admin/music-type');
       genreData.genres = res.data.data;
-    }).catch((error) => {
+    } catch (error) {
       console.log(error);
-    });
+    }
+    hideLoading();
   };
   return { genreData, getGenres };
 };
 // 新增曲風
 const handleAddGenre = (genreData, resetBtn) => {
   const addGenre = async (data) => {
-    showLoading('曲風新增中...');
-    await post('v1/admin/music-type', data).then((res) => {
+    showLoading('新增中...');
+    try {
+      const res = await post('v1/admin/music-type', data);
       genreData.genres.push(res.data.data);
       successNotify('新增成功');
-    }).catch((err) => {
-      console.log(err.response);
-      errorNotify(err.response);
-    });
-    resetBtn.value.click();
+    } catch (error) {
+      errorNotify(error.response);
+    }
     hideLoading();
+    resetBtn.value.click();
   };
   return addGenre;
 };
 // 更新曲風
 const handleEditGenre = () => {
   const editGenre = async (id, data) => {
-    showLoading('曲風更新中...');
+    showLoading('新增中...');
     await post(`v1/admin/music-type/${id}`, data).then(() => {
       successNotify('編輯成功!');
     }).catch((err) => {
-      console.log(err);
+      errorNotify('Error', err.response.data.errors.name[0]);
     });
     hideLoading();
   };
@@ -90,7 +91,7 @@ const handleEditGenre = () => {
 // 刪除曲風
 const handleDeleteGenre = (genreData) => {
   const deleteGenre = async (id) => {
-    showLoading('曲風刪除中...');
+    showLoading('刪除中...');
     await del(`v1/admin/music-type/${id}`).then(() => {
       genreData.genres.forEach((item, index) => {
         if (item.id === id) {
@@ -108,7 +109,7 @@ const handleDeleteGenre = (genreData) => {
 
 export default {
   name: 'GenreList',
-  components: { GenreItem, Loading },
+  components: { GenreItem },
   setup() {
     const resetBtn = ref(null);
     const genreSchema = { name: 'required' };
@@ -120,7 +121,7 @@ export default {
     const { genres } = toRefs(genreData);
     // eslint-disable-next-line object-curly-newline
     return {
-      genres, resetBtn, genreSchema, addGenre, editGenre, deleteGenre, loadingData,
+      genres, resetBtn, genreSchema, addGenre, editGenre, deleteGenre,
     };
   },
 };

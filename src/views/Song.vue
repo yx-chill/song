@@ -48,16 +48,17 @@ const handleFavoriteSong = (songId) => {
   const favoriteList = { songs: [] };
   const status = ref(false);
   const getFaoriteSong = (async () => {
-    await request('get', 'v1/music/like').then((res) => {
+    try {
+      const res = await request('get', 'v1/music/like');
       favoriteList.songs = res.data.data;
       favoriteList.songs.forEach((item) => {
         if (item.id === +songId) {
           status.value = true;
         }
       });
-    }).catch((err) => {
+    } catch (err) {
       console.log(err);
-    });
+    }
   });
   return { getFaoriteSong, status };
 };
@@ -67,6 +68,7 @@ const handleGetSongData = (songId) => {
   const data = reactive({ song: [] });
   const song = { value: [] };
   const getSongData = async () => {
+    if (songId === undefined) return;
     await axios({
       method: 'get',
       url: `https://api.sally-handmade.com/music/v1/music/${songId}`,
@@ -79,6 +81,7 @@ const handleGetSongData = (songId) => {
       }
     });
   };
+
   return { data, song, getSongData };
 };
 // 收藏&取消收藏
@@ -109,18 +112,16 @@ export default {
   setup() {
     const route = useRoute();
     const store = useStore();
-    const { songId } = route.params;
+    const songId = computed(() => route.params.songId);
 
     const curr = computed(() => store.getters.getCurrentSong);
     const play = computed(() => store.getters.playing);
-    const isPlay = ref(curr.value.id === +songId);
+    const isPlay = ref(curr.value.id === +songId.value);
     const isLogin = ref(storage.get('userToken'));
 
-    const { getFaoriteSong, status } = handleFavoriteSong(songId);
-    const { favorite, isLike } = handleFavorite(songId, status);
-    const { data, song, getSongData } = handleGetSongData(songId);
-
-    watchEffect(() => handleFavorite(songId, status));
+    const { getFaoriteSong, status } = handleFavoriteSong(songId.value);
+    const { favorite, isLike } = handleFavorite(songId.value, status);
+    const { data, song, getSongData } = handleGetSongData(songId.value);
 
     if (isLogin.value) getFaoriteSong();
     getSongData();
@@ -129,8 +130,14 @@ export default {
     };
 
     watch(curr, () => {
-      isPlay.value = (curr.value.id === +songId) || false;
+      isPlay.value = (curr.value.id === +songId.value) || false;
     });
+
+    watch(songId, () => {
+      getSongData();
+    });
+
+    watchEffect(() => handleFavorite(songId, status));
 
     return {
       songId, play, isPlay, song, data, newSong, isLike, favorite, isLogin,

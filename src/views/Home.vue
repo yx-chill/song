@@ -1,18 +1,20 @@
 <template>
-  <div class="p-7">
+  <div class="h-full p-7 overflow-auto" ref="main">
     <div class="p-3 text-blue-900 flex gap-2">
       <button class="rounded-full px-3 py-1 transition duration-300"
         :class="currentTag === 'genaral' ? 'bg-gray-200' :
         'bg-gray-600 text-white hover:bg-gray-500'"
-        @click.prevent="genaral" :disabled="currentTag === 'genaral'">一般</button>
+        @click="getSong('genaral'), currentTag = 'genaral'"
+        :disabled="currentTag === 'genaral'">一般</button>
       <button class="rounded-full px-3 py-1 transition duration-300"
         :class="currentTag === 'hot' ? 'bg-gray-200' :
         'bg-gray-600 text-white hover:bg-gray-500'"
-        @click.prevent="hot" :disabled="currentTag === 'hot'">熱門</button>
+        @click="getSong('hot'), currentTag = 'hot'" :disabled="currentTag === 'hot'">收藏數</button>
       <button class="rounded-full px-3 py-1 transition duration-300"
         :class="currentTag === 'watch' ? 'bg-gray-200' :
         'bg-gray-600 text-white hover:bg-gray-500'"
-        @click.prevent="watch" :disabled="currentTag === 'watch'">播放次數</button>
+        @click="getSong('watch'), currentTag = 'watch'"
+        :disabled="currentTag === 'watch'">播放次數</button>
     </div>
     <ul class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6
       gap-5 transition duration-500">
@@ -37,22 +39,11 @@
 
 <script>
 // @ is an alias to /src
-import { reactive, ref, toRefs } from 'vue';
+import {
+  reactive, ref, toRefs, onMounted,
+} from 'vue';
 import request from '@/includes/request';
-
-// 取得音樂列表
-const handleSongList = () => {
-  const songList = reactive({ songs: [] });
-  const getSongList = (async (query = '') => {
-    await request('get', `v1/music${query}`).then((res) => {
-      songList.songs = res.data.data;
-    }).catch((error) => {
-      console.log(error);
-    });
-  });
-  const { songs } = toRefs(songList);
-  return { getSongList, songs };
-};
+import { showLoading, hideLoading } from '@/composables/useLoading';
 
 export default {
   name: 'Home',
@@ -60,25 +51,72 @@ export default {
     const currentTag = ref('genaral');
     // eslint-disable-next-line global-require
     const defaultImg = require('../assets/headphone.jpg');
-    const { getSongList, songs } = handleSongList();
-    getSongList();
-    const genaral = () => {
-      currentTag.value = 'genaral';
-      getSongList();
+    const main = ref(null);
+    const songList = reactive({ songs: [] });
+    let currentPage = 1;
+    let lastPage;
+
+    const getSongList = async () => {
+      showLoading();
+      try {
+        const res = await request('get', 'v1/music');
+        songList.songs = res.data.data;
+        lastPage = res.data.meta.last_page;
+      } catch (error) {
+        console.log(error);
+      }
+      hideLoading();
     };
-    const hot = (() => {
-      currentTag.value = 'hot';
-      const query = '?order=music_likes_count';
-      getSongList(query);
-    });
-    const watch = () => {
-      currentTag.value = 'watch';
-      const query = '?order=watched';
-      getSongList(query);
+    getSongList();
+
+    const getSong = async (currTag, page = 1) => {
+      if (page === 1) {
+        songList.songs = [];
+        currentPage = 1;
+        showLoading();
+      }
+      let params;
+      switch (currTag) {
+        case 'genaral':
+          params = {};
+          break;
+        case 'hot':
+          params = { order: 'music_likes_count' };
+          break;
+        case 'watch':
+          params = { order: 'watched' };
+          break;
+        default:
+          params = {};
+      }
+      params.page = page;
+      try {
+        const data = await request('get', 'v1/music', params);
+        currentPage = data.data.meta.current_page;
+        lastPage = data.data.meta.last_page;
+        songList.songs = [...songList.songs, ...data.data.data];
+      } catch (error) {
+        console.log(error);
+      }
+      hideLoading();
     };
 
+    const handleScroll = (e) => {
+      const { clientHeight, scrollTop, scrollHeight } = e.srcElement;
+      if (scrollTop + clientHeight >= scrollHeight - 200 && currentPage < lastPage) {
+        currentPage += 1;
+        getSong(currentTag, currentPage);
+      }
+    };
+
+    onMounted(async () => {
+      main.value.addEventListener('scroll', handleScroll);
+    });
+
+    const { songs } = toRefs(songList);
+
     return {
-      songs, currentTag, genaral, hot, watch, defaultImg,
+      songs, currentTag, defaultImg, main, getSong,
     };
   },
 };

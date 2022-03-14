@@ -45,23 +45,27 @@
 import { useRouter } from 'vue-router';
 import { get } from '@/includes/adminReq';
 import storage from '@/includes/storage';
-import { successNotify } from '@/composables/useNotification';
+import { successNotify, errorNotify } from '@/composables/useNotification';
+import { showLoading, hideLoading } from '@/composables/useLoading';
 
 export default {
   name: 'BackSideBar',
   setup() {
     const router = useRouter();
     const adminLogout = async () => {
-      await get('v1/admin/logout').then(() => {
+      showLoading();
+      try {
+        await get('v1/admin/logout');
         storage.remove('adminToken');
         storage.remove('adminRefresh');
         router.push({ name: 'admin' }).then(() => successNotify('登出成功'));
-      }).catch((err) => {
-        console.log(err.response);
+      } catch (err) {
+        errorNotify('Error', err.response);
         storage.remove('adminToken');
         storage.remove('adminRefresh');
         router.push({ name: 'admin' });
-      });
+      }
+      hideLoading();
     };
     return {
       adminLogout,

@@ -1,6 +1,5 @@
 <template>
   <main class="main overflow-hidden p-20 relative">
-    <Loading v-if="loadingData.showLoading" :message="loadingData.loadingMsg" />
     <div class="loginform bg-purple-200 bg-opacity-80 p-4 rounded">
       <VeeForm :validation-schema="loginSchema" @submit="login($event)" class="space-y-3">
         <div class="emailgroup relative mb-3">
@@ -40,11 +39,10 @@ import { ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 import storage from '@/includes/storage';
-import Loading, { useLoading } from '@/components/Loading.vue';
 import { successNotify } from '@/composables/useNotification';
+import { showLoading, hideLoading } from '@/composables/useLoading';
 
 const loginSchema = { email: 'required|min:3|max:50|email' };
-const { loadingData, showLoading, hideLoading } = useLoading();
 
 // 切換密碼欄type
 const handlePwdType = () => {
@@ -101,13 +99,12 @@ const handleLogin = () => {
 
 export default {
   name: 'Login',
-  components: { Loading },
   setup() {
     const { pwd, showPwd, toggleType } = handlePwdType();
     // eslint-disable-next-line object-curly-newline
     const { errMsg, disabled, password, login } = handleLogin();
     return {
-      loginSchema, pwd, showPwd, toggleType, loadingData, errMsg, disabled, password, login,
+      loginSchema, pwd, showPwd, toggleType, errMsg, disabled, password, login,
     };
   },
 };

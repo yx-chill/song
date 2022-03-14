@@ -29,6 +29,7 @@ import {
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 import axios from 'axios';
+import { showLoading, hideLoading } from '@/composables/useLoading';
 
 // 查詢結果
 const handleGetResult = (store) => {
@@ -38,6 +39,7 @@ const handleGetResult = (store) => {
   const data = reactive({ result: [] });
   const getResult = async () => {
     store.commit('getDefaultQuery', query.value);
+    showLoading();
     await axios({
       method: 'get',
       url: `https://api.sally-handmade.com/music/v1/music?search=${query.value}`,
@@ -47,6 +49,7 @@ const handleGetResult = (store) => {
     }).catch((error) => {
       console.log(error);
     });
+    hideLoading();
   };
   // 監聽查詢參數，有改變會自動執行
   watchEffect(() => getResult());

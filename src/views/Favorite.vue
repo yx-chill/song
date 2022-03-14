@@ -28,6 +28,7 @@ import { useRouter } from 'vue-router';
 import storage from '@/includes/storage';
 import request from '@/includes/request';
 import { warningNotify } from '@/composables/useNotification';
+import { showLoading, hideLoading } from '@/composables/useLoading';
 
 // 取得收藏列表
 const handleFavoriteSong = () => {
@@ -39,11 +40,14 @@ const handleFavoriteSong = () => {
       router.push({ name: 'home' }).then(() => warningNotify('請先登入'));
       return;
     }
-    await request('get', 'v1/music/like').then((res) => {
+    showLoading();
+    try {
+      const res = await request('get', 'v1/music/like');
       favoriteList.songs = res.data.data;
-    }).catch((err) => {
+    } catch (err) {
       console.log(err);
-    });
+    }
+    hideLoading();
   });
   const { songs } = toRefs(favoriteList);
 

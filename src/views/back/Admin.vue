@@ -1,6 +1,5 @@
 <template>
   <main class="main overflow-hidden p-20 relative">
-    <Loading v-if="loadingData.showLoading" :message="loadingData.loadingMsg" />
     <form @submit.prevent="adminLogin"
       class="bg-blue-200 bg-opacity-80 p-4 rounded">
       <div class="emailgroup relative mb-3">
@@ -30,10 +29,8 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 import storage from '@/includes/storage';
-import Loading, { useLoading } from '@/components/Loading.vue';
 import { successNotify } from '@/composables/useNotification';
-
-const { loadingData, showLoading, hideLoading } = useLoading();
+import { showLoading, hideLoading } from '@/composables/useLoading';
 
 const handlePwdType = () => {
   const pwd = ref(null);
@@ -84,13 +81,12 @@ const handleAdminLogin = () => {
 
 export default {
   name: 'Admin',
-  components: { Loading },
   setup() {
     const { pwd, showPwd, toggleType } = handlePwdType();
     // eslint-disable-next-line object-curly-newline
     const { email, password, errMsg, adminLogin } = handleAdminLogin();
     return {
-      adminLogin, email, password, errMsg, loadingData, pwd, showPwd, toggleType,
+      adminLogin, email, password, errMsg, pwd, showPwd, toggleType,
     };
   },
 };

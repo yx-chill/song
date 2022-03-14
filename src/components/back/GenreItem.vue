@@ -57,7 +57,7 @@
       </div>
       <div class="text-center w-1/10">
         <button type="button" class="px-5 py-3 text-white font-bold rounded-lg
-          bg-red-500 hover:bg-red-600" @click.prevent="editForm = false">取消</button>
+          bg-red-500 hover:bg-red-600" @click="editForm = false">取消</button>
       </div>
     </VeeForm>
   </div>

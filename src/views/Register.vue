@@ -1,6 +1,5 @@
 <template>
   <main class="main overflow-hidden p-20 relative">
-    <Loading v-if="loadingData.showLoading" :message="loadingData.loadingMsg" />
     <div class="registerform bg-purple-200 bg-opacity-80 p-4 rounded">
       <VeeForm :validation-schema="schema" @submit="register" class="space-y-3">
         <div class="emailgroup relative">
@@ -49,8 +48,8 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
-import Loading, { useLoading } from '@/components/Loading.vue';
 import { successNotify } from '@/composables/useNotification';
+import { showLoading, hideLoading } from '@/composables/useLoading';
 
 const schema = ({
   name: 'required|min:3|max:10',
@@ -58,8 +57,6 @@ const schema = ({
   password: 'required|min:6|max:32',
   password_confirmation: 'passwords_mismatch:@password',
 });
-
-const { loadingData, showLoading, hideLoading } = useLoading();
 
 // 註冊
 const handleRegister = () => {
@@ -85,11 +82,10 @@ const handleRegister = () => {
 
 export default {
   name: 'Register',
-  components: { Loading },
   setup() {
     const { errMsg, register } = handleRegister();
     // eslint-disable-next-line object-curly-newline
-    return { register, schema, errMsg, loadingData };
+    return { register, schema, errMsg };
   },
 };
 </script>

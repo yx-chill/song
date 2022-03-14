@@ -1,6 +1,5 @@
 <template>
   <section class="relative">
-    <Loading v-if="loadingData.showLoading" :message="loadingData.loadingMsg" />
     <VeeForm @submit="addSong($event)" :validation-schema="songSchema"
     class="bg-green-200 bg-opacity-80 p-4 rounded">
       <div class="flex justify-between gap-3 mb-2">
@@ -47,10 +46,8 @@ import { ref, reactive, toRefs } from 'vue';
 import { get, post } from '@/includes/adminReq';
 import UploadSong from '@/components/back/UploadSong.vue';
 import UploadImg from '@/components/back/UploadImg.vue';
-import Loading, { useLoading } from '@/components/Loading.vue';
 import { successNotify, errorNotify } from '@/composables/useNotification';
-
-const { loadingData, showLoading, hideLoading } = useLoading();
+import { showLoading, hideLoading } from '@/composables/useLoading';
 
 // 取得曲風
 const handleGenres = () => {
@@ -95,7 +92,6 @@ const handleAddSong = (songData, imgData) => {
       errorNotify('尚未上傳歌曲');
       return;
     }
-    showLoading('新增歌曲中...');
     const data = new FormData();
     data.append('name', e.songname);
     data.append('composer', e.composer);
@@ -104,6 +100,7 @@ const handleAddSong = (songData, imgData) => {
     if (imgData.file) {
       data.append('image', imgData.file);
     }
+    showLoading('新增中...');
     await post('v1/admin/music', data, {
       headers: { 'Content-Type': 'multipart/form-data' },
     }).then(() => {
@@ -111,9 +108,9 @@ const handleAddSong = (songData, imgData) => {
     }).catch((err) => {
       console.log(err.response.data.errors);
     });
+    hideLoading();
     isClean.value = !isClean.value;
     cleanData.value.click();
-    hideLoading();
   };
   return { isClean, cleanData, addSong };
 };
@@ -123,7 +120,6 @@ export default {
   components: {
     UploadSong,
     UploadImg,
-    Loading,
   },
   setup() {
     const songSchema = {
@@ -137,7 +133,7 @@ export default {
     const { isClean, cleanData, addSong } = handleAddSong(songData, imgData);
     getGenres();
     return {
-      genres, isClean, cleanData, uploadSong, uploadImg, addSong, songSchema, loadingData,
+      genres, isClean, cleanData, uploadSong, uploadImg, addSong, songSchema,
     };
   },
 };
