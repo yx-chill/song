@@ -2,7 +2,9 @@
 
 ![cover picture](https://line.sally-handmade.com/lineimg/44b433a.jpg)
 
-Demo: <https://song.sally-handmade.com>
+Demo:
+  - 前台 <https://song.sally-handmade.com>
+  - 後台 <https://song.sally-handmade.com/#/admin>
 
 ## 專案介紹
 >使用 VUE 開發的音樂播放網站
@@ -16,6 +18,7 @@ Demo: <https://song.sally-handmade.com>
 
 ## 功能
 ### 前台
+
 1. 首頁音樂列表選擇後即可播放
   + 列表使用Infinite Scroll
   + 使用howler.js操作音樂檔案
@@ -31,7 +34,7 @@ Demo: <https://song.sally-handmade.com>
 
 4. 收藏
   + 登入後可以使用收藏/取消收藏功能
- 
+
 ### 後台 (管理樂曲)
 1. 曲風管理
   + 針對曲風做新增/刪除/修改功能
@@ -47,6 +50,7 @@ Demo: <https://song.sally-handmade.com>
   + 上傳音樂圖片檔與音樂檔案
   + 預覽圖片
 
+
 音樂使用 : <https://www.bensound.com/royalty-free-music>
 
 假圖使用 : <https://picsum.photos/>
@@ -61,12 +65,15 @@ Infinite Scroll 參考 : <https://learnvue.co/>
 ## 開發人員
 ### 前端
   yx-chill
+
   - 網站開發
   - 路由設定
   - API串接
   - 網站部署
+
 ### 後端
   KOIE
+
   - API開發(Laravel)
   - 資料庫設定與開發(MongoDB)
   - 網域、網站空間提供
