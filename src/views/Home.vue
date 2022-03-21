@@ -22,8 +22,6 @@
         <router-link :to="{ name: 'song', params: { songId: song.id } }"
           class="block p-4 bg-gray-600 hover:bg-gray-500 rounded duration-500">
           <div class="aspect-w-1 aspect-h-1 rounded overflow-hidden mb-4 relative">
-            <!-- :style="{backgroundImage: song.image ?
-            'url(' + song.image + ')' : 'url(' + defaultImg + ')' }" -->
             <div class="absolute inset-0 bg-center filter blur-xl"
               :style="{backgroundImage: song.image ?
               'url(' + song.image + ')' : 'url(' + defaultImg + ')' }"></div>

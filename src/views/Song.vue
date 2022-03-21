@@ -89,19 +89,19 @@ const handleFavorite = (songId, status) => {
   const isLike = status;
   const favorite = async () => {
     if (!status.value) {
-      await request('get', `v1/music/${songId}/like`).then((res) => {
-        console.log(res);
+      try {
+        await request('get', `v1/music/${songId}/like`);
         isLike.value = true;
-      }).catch((err) => {
-        console.log(err);
-      });
+      } catch (error) {
+        console.log(error);
+      }
     } else {
-      await request('get', `v1/music/${songId}/unlike`).then((res) => {
-        console.log(res);
+      try {
+        await request('get', `v1/music/${songId}/unlike`);
         isLike.value = false;
-      }).catch((err) => {
-        console.log(err);
-      });
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
   return { favorite, isLike };

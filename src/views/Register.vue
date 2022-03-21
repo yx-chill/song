@@ -65,16 +65,16 @@ const handleRegister = () => {
   const register = async (data) => {
     errMsg.value = '';
     showLoading('註冊中...');
-    await axios({
-      method: 'post',
-      url: 'https://api.sally-handmade.com/music/v1/register',
-      data,
-    }).then((res) => {
-      console.log(res.data.message);
+    try {
+      await axios({
+        method: 'post',
+        url: 'https://api.sally-handmade.com/music/v1/register',
+        data,
+      });
       router.push({ name: 'login' }).then(() => successNotify('註冊成功'));
-    }).catch((err) => {
-      errMsg.value = err.response.data.errors.email[0] || '';
-    });
+    } catch (error) {
+      errMsg.value = error.response.data.errors.email[0] || '';
+    }
     hideLoading();
   };
   return { errMsg, register };

@@ -4,7 +4,7 @@
     <div class="w-full border aspect-w-1 aspect-h-1 mb-4
       rounded overflow-hidden relative">
       <div class="w-full h-full">
-        <img v-if="preview" :src="preview" alt="music photo">
+        <img v-if="preview" :src="preview" alt="music photo" class="w-full h-full">
         <i v-if="preview" class="fa fa-times text-xl cursor-pointer px-1
           absolute top-3 right-3 rounded-full"
         @click="cancelImg" />
