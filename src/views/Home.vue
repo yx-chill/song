@@ -73,21 +73,13 @@ export default {
         currentPage = 1;
         showLoading();
       }
-      let params = { sort: 'desc', page };
-      switch (currTag) {
-        case 'genaral':
-          params = {};
-          break;
-        case 'hot':
-          params.order = 'music_likes_count';
-          break;
-        case 'watch':
-          params.order = 'watched';
-          break;
-        default:
-          params = {};
+      const params = { sort: 'desc', page };
+      if (currTag === 'hot') {
+        params.order = 'music_likes_count';
       }
-      // params.page = page;
+      if (currTag === 'watch') {
+        params.order = 'watched';
+      }
       try {
         const data = await request('get', 'v1/music', params);
         currentPage = data.data.meta.current_page;
@@ -101,9 +93,9 @@ export default {
 
     const handleScroll = (e) => {
       const { clientHeight, scrollTop, scrollHeight } = e.srcElement;
-      if (scrollTop + clientHeight >= scrollHeight - 200 && currentPage < lastPage) {
+      if (scrollTop + clientHeight >= scrollHeight - 300 && currentPage < lastPage) {
         currentPage += 1;
-        getSong(currentTag, currentPage);
+        getSong(currentTag.value, currentPage);
       }
     };
 
