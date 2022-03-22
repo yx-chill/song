@@ -83,6 +83,7 @@ const handleDeleteSong = (songList) => {
           songList.songs.splice(index, 1);
         }
       });
+      successNotify('刪除成功');
     }).catch((err) => {
       errorNotify('無法刪除', err.response.data.message);
     });

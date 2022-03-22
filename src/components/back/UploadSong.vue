@@ -17,7 +17,8 @@
           @drop.prevent.stop="upload($event)">
         <h5>Drop your files here</h5>
       </div>
-      <div class="flex items-center gap-x-4 mt-6">
+      <p class="text-red-500 text-sm font-bold">檔案限制 : 5MB</p>
+      <div class="flex items-center gap-x-4 mt-3">
         <button type="button" class="block bg-green-500 rounded text-white
           hover:bg-green-400 duration-500 px-2 py-1"
           @click="choose">選擇歌曲</button>
@@ -57,10 +58,17 @@ export default {
     const upload = (e) => {
       isDragover.value = false;
       file.value = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
+      if (file.value.size > 5242880) {
+        warningNotify('超過檔案大小限制', '請選擇歌曲檔案');
+        fileDom.value.vlue = '';
+        file.value = '';
+        return;
+      }
       if (file.value.type !== 'audio/mpeg') {
         warningNotify('檔案格式錯誤', '請選擇歌曲檔案');
         fileDom.value.vlue = '';
         file.value = '';
+        return;
       }
       emit('uploadSong', file.value);
     };

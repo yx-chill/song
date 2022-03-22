@@ -73,21 +73,21 @@ export default {
         currentPage = 1;
         showLoading();
       }
-      let params;
+      let params = { sort: 'desc', page };
       switch (currTag) {
         case 'genaral':
           params = {};
           break;
         case 'hot':
-          params = { order: 'music_likes_count' };
+          params.order = 'music_likes_count';
           break;
         case 'watch':
-          params = { order: 'watched' };
+          params.order = 'watched';
           break;
         default:
           params = {};
       }
-      params.page = page;
+      // params.page = page;
       try {
         const data = await request('get', 'v1/music', params);
         currentPage = data.data.meta.current_page;

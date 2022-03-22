@@ -75,6 +75,6 @@ Infinite Scroll 參考 : <https://learnvue.co/>
   KOIE
 
   - API開發(Laravel)
-  - 資料庫設定與開發(MongoDB)
+  - 資料庫設定與開發(MySQL)
   - 網域、網站空間提供
   - 網站部署
