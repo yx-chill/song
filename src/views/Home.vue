@@ -54,18 +54,17 @@ export default {
     let currentPage = 1;
     let lastPage;
 
-    const getSongList = async () => {
-      showLoading();
-      try {
-        const res = await request('get', 'v1/music');
-        songList.songs = res.data.data;
-        lastPage = res.data.meta.last_page;
-      } catch (error) {
-        console.log(error);
-      }
-      hideLoading();
-    };
-    getSongList();
+    // const getSongList = async () => {
+    //   showLoading();
+    //   try {
+    //     const res = await request('get', 'v1/music');
+    //     songList.songs = res.data.data;
+    //     lastPage = res.data.meta.last_page;
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    //   hideLoading();
+    // };
 
     const getSong = async (currTag, page = 1) => {
       if (page === 1) {
@@ -90,6 +89,8 @@ export default {
       }
       hideLoading();
     };
+
+    getSong();
 
     const handleScroll = (e) => {
       const { clientHeight, scrollTop, scrollHeight } = e.srcElement;
